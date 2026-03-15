@@ -1,182 +1,487 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dietary Recipe Finder</title>
-  <link rel="stylesheet" href="style.css" />
-  <!-- Google Fonts: Playfair Display + DM Sans -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>NutriFind — Healthy Recipe Finder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
 
-  <!-- ===================== NAVBAR ===================== -->
-  <header class="navbar" id="navbar">
-    <div class="nav-inner">
-      <a href="#" class="nav-logo" onclick="showHome()">
-        <span class="logo-leaf">🌿</span>
-        <span>Dietary Recipe Finder</span>
-      </a>
+<!-- CURSOR GLOW -->
+<div class="cursor-glow" id="cursorGlow"></div>
 
-      <!-- Desktop Nav Links -->
-      <nav class="nav-links" id="navLinks">
-        <a href="#" onclick="showHome()">Home</a>
-        <a href="#recipes-section" onclick="scrollToRecipes()">Recipes</a>
-        <a href="#categories-section">Categories</a>
-        <a href="#about-section">About</a>
-      </nav>
+<!-- ════════════════ LOADING SCREEN ════════════════ -->
+<div id="loadScreen">
+  <div class="ls-logo">Nutri<span>Find</span></div>
+  <div class="ls-tagline">YOUR HEALTHY RECIPE COMPANION</div>
+  <div class="ls-bar-wrap"><div class="ls-bar"></div></div>
+  <div class="ls-dots">
+    <div class="ls-dot"></div>
+    <div class="ls-dot"></div>
+    <div class="ls-dot"></div>
+  </div>
+</div>
 
-      <!-- Search Bar -->
+<!-- ════════════════ TOAST ════════════════ -->
+<div class="toast" id="toast"><span class="toast-icon" id="toastIcon"></span><span id="toastMsg"></span></div>
+
+<!-- ════════════════ NAVBAR ════════════════ -->
+<header class="navbar" id="navbar">
+  <div class="nav-inner">
+    <!-- Logo -->
+    <a class="nav-logo" href="#" onclick="goHome()">
+      <div class="nav-logo-icon">🥗</div>
+      <div>
+        <span>NutriFind</span>
+        <span class="nav-logo-sub">Healthy Recipes ✦</span>
+      </div>
+    </a>
+
+    <!-- Search -->
+    <div class="nav-search-wrap" id="navSearchWrap">
       <div class="nav-search">
-        <input
-          type="text"
-          id="navSearchInput"
-          placeholder="Search recipes..."
-          oninput="handleNavSearch(this.value)"
-          autocomplete="off"
-        />
-        <button class="search-btn" onclick="handleNavSearch(document.getElementById('navSearchInput').value)">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="globalSearch" placeholder="Search recipes, ingredients, diet types..." autocomplete="off"
+          oninput="handleSearch(this.value)"
+          onfocus="showSuggestions()"
+          onblur="setTimeout(hideSuggestions,180)"/>
+        <button class="ns-btn" onclick="handleSearch(document.getElementById('globalSearch').value)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Search
         </button>
       </div>
+      <div class="search-sug" id="searchSug"></div>
+    </div>
 
-      <!-- Hamburger -->
-      <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Toggle menu">
-        <span></span><span></span><span></span>
+    <!-- Right nav -->
+    <div class="nav-right">
+      <!-- Login / User -->
+      <div class="user-wrap" id="userWrap">
+        <button class="user-btn" id="userBtn" onclick="toggleUserFlyout()">
+          <div class="user-avatar" id="userAvatar">?</div>
+          <span id="userBtnLabel">Login</span>
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="user-flyout" id="userFlyout">
+          <div class="uf-user-info" id="ufInfo" style="display:none;">
+            <div class="uf-name" id="ufName"></div>
+            <div class="uf-email" id="ufEmail"></div>
+          </div>
+          <div class="uf-item" id="ufLoginItem" onclick="openModal('loginModal');closeUF()">
+            <span>👤</span> Login / Register
+          </div>
+          <div class="uf-divider"></div>
+          <div class="uf-item" onclick="showFavorites();closeUF()">❤ My Saved Recipes</div>
+          <div class="uf-item" onclick="openModal('mealPlanModal');closeUF()">📅 Meal Planner</div>
+          <div class="uf-item" onclick="openAddRecipe();closeUF()">➕ Add Recipe</div>
+          <div class="uf-divider"></div>
+          <div class="uf-item danger" id="ufLogout" style="display:none;" onclick="doLogout()">🚪 Logout</div>
+        </div>
+      </div>
+
+      <button class="nav-btn" onclick="showFavorites()">
+        ❤ Saved
+        <span class="badge" id="favBadge" style="display:none;">0</span>
       </button>
+
+      <button class="nav-btn" onclick="openModal('mealPlanModal')">📅 Planner</button>
+
+      <button class="nav-icon-btn" onclick="toggleDark()" id="darkBtn" title="Toggle theme">🌙</button>
+      <button class="nav-icon-btn" onclick="surpriseMe()" title="Random recipe">🎲</button>
+      <button class="nav-icon-btn" onclick="openAddRecipe()" title="Add recipe">➕</button>
     </div>
-  </header>
 
-  <!-- ===================== MAIN CONTENT WRAPPER ===================== -->
-  <main id="app">
+    <!-- Hamburger (mobile) -->
+    <button class="ham-btn" id="hamBtn" onclick="toggleDrawer()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
 
-    <!-- ===================== HOME VIEW ===================== -->
-    <div id="home-view">
+<!-- ════════════════ PILL BAR ════════════════ -->
+<div class="pill-bar" id="pillBar">
+  <div class="pill-inner">
+    <button class="pill active" data-cat="All"         onclick="pillFilter('All',this)">🍽 All Recipes</button>
+    <button class="pill" data-cat="Vegetarian"         onclick="pillFilter('Vegetarian',this)">🥗 Vegetarian</button>
+    <button class="pill" data-cat="Vegan"              onclick="pillFilter('Vegan',this)">🌱 Vegan</button>
+    <button class="pill" data-cat="Keto"               onclick="pillFilter('Keto',this)">🥑 Keto</button>
+    <button class="pill" data-cat="High Protein"       onclick="pillFilter('High Protein',this)">💪 High Protein</button>
+    <button class="pill" data-cat="__favs__"           onclick="showFavorites()">❤ Saved</button>
+    <button class="pill" data-cat="__planner__"        onclick="openModal('mealPlanModal')">📅 Planner</button>
+    <button class="pill" data-cat="__add__"            onclick="openAddRecipe()">➕ Add Recipe</button>
+    <button class="pill" data-cat="__surprise__"       onclick="surpriseMe()">🎲 Surprise Me</button>
+  </div>
+</div>
 
-      <!-- HERO -->
-      <section class="hero">
-        <div class="hero-overlay"></div>
-        <div class="hero-content">
-          <p class="hero-eyebrow">Eat well. Live well.</p>
-          <h1 class="hero-heading">Find Healthy Recipes<br /><em>for Your Diet</em></h1>
-          <p class="hero-desc">
-            Discover hundreds of curated recipes tailored to your lifestyle — whether you're going Vegan, Keto, High-Protein, or Vegetarian.
-          </p>
-          <button class="btn-primary" onclick="scrollToRecipes()">Browse Recipes</button>
-        </div>
-        <div class="hero-badge">
-          <span>100+</span>
-          <small>Recipes</small>
-        </div>
-      </section>
+<!-- ════════════════ MOBILE DRAWER ════════════════ -->
+<div class="drawer-backdrop" id="drawerBackdrop" onclick="toggleDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-head">
+    <h3>🥗 NutriFind</h3>
+    <button class="drawer-close" onclick="toggleDrawer()">✕</button>
+  </div>
+  <div class="drawer-body">
+    <a class="dr-link" href="#" onclick="goHome();toggleDrawer()"><span class="dr-icon">🏠</span> Home</a>
+    <a class="dr-link" href="#" onclick="pillFilter('Vegetarian',null);toggleDrawer()"><span class="dr-icon">🥗</span> Vegetarian</a>
+    <a class="dr-link" href="#" onclick="pillFilter('Vegan',null);toggleDrawer()"><span class="dr-icon">🌱</span> Vegan</a>
+    <a class="dr-link" href="#" onclick="pillFilter('Keto',null);toggleDrawer()"><span class="dr-icon">🥑</span> Keto</a>
+    <a class="dr-link" href="#" onclick="pillFilter('High Protein',null);toggleDrawer()"><span class="dr-icon">💪</span> High Protein</a>
+    <a class="dr-link" href="#" onclick="showFavorites();toggleDrawer()"><span class="dr-icon">❤</span> Saved Recipes</a>
+    <a class="dr-link" href="#" onclick="openModal('mealPlanModal');toggleDrawer()"><span class="dr-icon">📅</span> Meal Planner</a>
+    <a class="dr-link" href="#" onclick="openAddRecipe();toggleDrawer()"><span class="dr-icon">➕</span> Add Recipe</a>
+    <a class="dr-link" href="#" onclick="openModal('loginModal');toggleDrawer()"><span class="dr-icon">👤</span> Login / Register</a>
+    <a class="dr-link" href="#" onclick="toggleDark();toggleDrawer()"><span class="dr-icon">🌙</span> Toggle Dark Mode</a>
+    <a class="dr-link" href="#" onclick="surpriseMe();toggleDrawer()"><span class="dr-icon">🎲</span> Surprise Me</a>
+  </div>
+</div>
 
-      <!-- CATEGORIES -->
-      <section class="section" id="categories-section">
-        <div class="section-header">
-          <p class="section-eyebrow">Explore by Diet</p>
-          <h2 class="section-title">Choose Your Category</h2>
-        </div>
-        <div class="categories-grid">
-          <div class="cat-card" onclick="filterByCategory('Vegetarian')">
-            <div class="cat-icon">🥗</div>
-            <h3>Vegetarian</h3>
-            <p>Plant-rich, nourishing meals without meat.</p>
-            <span class="cat-arrow">→</span>
-          </div>
-          <div class="cat-card" onclick="filterByCategory('Vegan')">
-            <div class="cat-icon">🌱</div>
-            <h3>Vegan</h3>
-            <p>100% plant-based for a compassionate plate.</p>
-            <span class="cat-arrow">→</span>
-          </div>
-          <div class="cat-card" onclick="filterByCategory('Keto')">
-            <div class="cat-icon">🥑</div>
-            <h3>Keto</h3>
-            <p>Low-carb, high-fat recipes for ketosis.</p>
-            <span class="cat-arrow">→</span>
-          </div>
-          <div class="cat-card" onclick="filterByCategory('High Protein')">
-            <div class="cat-icon">💪</div>
-            <h3>High Protein</h3>
-            <p>Fuel your body and build lean muscle.</p>
-            <span class="cat-arrow">→</span>
-          </div>
-        </div>
-      </section>
+<!-- ════════════════ MODALS ════════════════ -->
 
-      <!-- RECIPES -->
-      <section class="section" id="recipes-section">
-        <div class="section-header">
-          <p class="section-eyebrow">Fresh Picks</p>
-          <h2 class="section-title">All Recipes</h2>
-        </div>
-
-        <!-- Filter Bar -->
-        <div class="filter-bar">
-          <button class="filter-btn active" onclick="filterRecipes('All', this)">All</button>
-          <button class="filter-btn" onclick="filterRecipes('Vegetarian', this)">Vegetarian</button>
-          <button class="filter-btn" onclick="filterRecipes('Vegan', this)">Vegan</button>
-          <button class="filter-btn" onclick="filterRecipes('Keto', this)">Keto</button>
-          <button class="filter-btn" onclick="filterRecipes('High Protein', this)">High Protein</button>
-        </div>
-
-        <!-- Recipe Grid -->
-        <div class="recipes-grid" id="recipesGrid">
-          <!-- Injected by JS -->
-        </div>
-
-        <!-- Empty State -->
-        <div class="empty-state" id="emptyState" style="display:none;">
-          <span>🔍</span>
-          <p>No recipes found. Try a different search or filter.</p>
-        </div>
-      </section>
-
-      <!-- ABOUT -->
-      <section class="section about-section" id="about-section">
-        <div class="about-inner">
-          <div class="about-text">
-            <p class="section-eyebrow">Our Story</p>
-            <h2 class="section-title">Eating Right<br />Starts Here</h2>
-            <p>
-              Dietary Recipe Finder was built to make healthy eating simple and joyful. We believe everyone deserves access to delicious food that aligns with their body's needs — without the confusion.
-            </p>
-            <p>
-              Browse recipes across four curated diet categories, find detailed cooking instructions, and enjoy every meal with confidence.
-            </p>
-          </div>
-          <div class="about-stats">
-            <div class="stat"><strong>100+</strong><span>Recipes</span></div>
-            <div class="stat"><strong>4</strong><span>Diet Types</span></div>
-            <div class="stat"><strong>0</strong><span>Junk Food</span></div>
-          </div>
-        </div>
-      </section>
-
-    </div><!-- /home-view -->
-
-    <!-- ===================== RECIPE DETAIL VIEW ===================== -->
-    <div id="detail-view" style="display:none;">
-      <div class="detail-back">
-        <button onclick="closeDetail()">← Back to Recipes</button>
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('loginModal')">✕</button>
+    <div class="login-split">
+      <div class="login-left">
+        <div class="ll-icon">🥗</div>
+        <div class="ll-title">Get more from NutriFind</div>
+        <div class="ll-sub">Save recipes, plan your week, and add your own healthy creations.</div>
       </div>
-      <div class="detail-container" id="detailContainer">
-        <!-- Injected by JS -->
+      <div class="login-right">
+        <div class="modal-tabs">
+          <button class="mtab active" id="tabLogin" onclick="switchTab('login')">Login</button>
+          <button class="mtab" id="tabReg" onclick="switchTab('register')">Register</button>
+        </div>
+        <div id="loginForm">
+          <div class="modal-title" id="formTitle">Login</div>
+          <div class="modal-sub">Welcome back! Great to see you.</div>
+          <div class="form-group"><label>Email</label><input type="email" id="loginEmail" placeholder="your@email.com"/></div>
+          <div class="form-group"><label>Password</label><input type="password" id="loginPass" placeholder="Min. 6 characters"/></div>
+          <div class="form-error" id="loginErr"></div>
+          <button class="btn-submit" onclick="doLogin()">Login Securely →</button>
+          <p class="modal-legal">By logging in you agree to <a href="#">Terms</a> & <a href="#">Privacy Policy</a>.<br/>Demo: any email + password ≥ 6 chars</p>
+        </div>
+        <div id="regForm" style="display:none;">
+          <div class="modal-title">Create Account</div>
+          <div class="modal-sub">Join the healthy eating community.</div>
+          <div class="form-group"><label>Full Name</label><input type="text" id="regName" placeholder="Jane Doe"/></div>
+          <div class="form-group"><label>Email</label><input type="email" id="regEmail" placeholder="your@email.com"/></div>
+          <div class="form-group"><label>Password</label><input type="password" id="regPass" placeholder="Min. 6 characters"/></div>
+          <div class="form-error" id="regErr"></div>
+          <button class="btn-submit" onclick="doRegister()">Create Account →</button>
+          <p class="modal-legal">By registering you agree to our <a href="#">Terms</a>.</p>
+        </div>
       </div>
     </div>
+  </div>
+</div>
 
-  </main>
-
-  <!-- ===================== FOOTER ===================== -->
-  <footer class="footer">
-    <div class="footer-inner">
-      <span class="logo-leaf">🌿</span>
-      <p>© 2025 Dietary Recipe Finder. Eat smart. Live healthy.</p>
+<!-- ADD RECIPE MODAL -->
+<div class="modal-overlay" id="addRecipeModal">
+  <div class="modal-box wide">
+    <button class="modal-close" onclick="closeModal('addRecipeModal')">✕</button>
+    <div class="modal-header">
+      <h2>🍳 Add Your Recipe</h2>
+      <p>Share a healthy creation with the NutriFind community</p>
     </div>
-  </footer>
+    <div class="modal-scroll">
+      <div class="ar-grid">
+        <div class="form-group"><label>Recipe Name *</label><input type="text" id="ar-name" placeholder="e.g. Mango Chia Pudding"/></div>
+        <div class="form-group"><label>Category *</label>
+          <select id="ar-cat"><option value="">Choose diet type</option><option>Vegetarian</option><option>Vegan</option><option>Keto</option><option>High Protein</option></select>
+        </div>
+        <div class="form-group"><label>Image URL</label><input type="url" id="ar-img" placeholder="https://images.unsplash.com/..."/></div>
+        <div class="form-group"><label>Prep Time (mins) *</label><input type="number" id="ar-time" placeholder="e.g. 20" min="1"/></div>
+        <div class="form-group"><label>Difficulty</label>
+          <select id="ar-diff"><option>Easy</option><option>Medium</option><option>Hard</option></select>
+        </div>
+        <div class="form-group"><label>Calories (kcal)</label><input type="number" id="ar-cal" placeholder="e.g. 320"/></div>
+        <div class="form-group"><label>Protein (g)</label><input type="number" id="ar-pro" placeholder="e.g. 18"/></div>
+        <div class="form-group"><label>Carbs (g)</label><input type="number" id="ar-carb" placeholder="e.g. 40"/></div>
+        <div class="form-group span2"><label>Ingredients * (one per line)</label>
+          <textarea id="ar-ing" rows="4" placeholder="1 cup oats&#10;2 tbsp honey&#10;1 ripe banana"></textarea></div>
+        <div class="form-group span2"><label>Cooking Steps * (one per line)</label>
+          <textarea id="ar-steps" rows="5" placeholder="Mix dry ingredients&#10;Add wet ingredients&#10;Refrigerate 1 hour"></textarea></div>
+      </div>
+      <div class="form-error" id="arErr"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('addRecipeModal')">Cancel</button>
+      <button class="btn-save" onclick="saveRecipe()">Save Recipe</button>
+    </div>
+  </div>
+</div>
 
+<!-- MEAL PLANNER MODAL -->
+<div class="modal-overlay" id="mealPlanModal">
+  <div class="modal-box ultra">
+    <button class="modal-close" onclick="closeModal('mealPlanModal')">✕</button>
+    <div class="modal-header">
+      <h2>📅 Weekly Meal Planner</h2>
+      <p>Plan every meal for your week. Auto-saved to your device.</p>
+    </div>
+    <div class="modal-scroll">
+      <div class="mp-grid" id="mpGrid"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="clearMealPlan()">🗑 Clear All</button>
+      <button class="btn-save" onclick="shareMealPlan()">📤 Copy & Share</button>
+    </div>
+  </div>
+</div>
+
+<!-- SLOT PICKER -->
+<div class="modal-overlay" id="slotModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('slotModal')">✕</button>
+    <div class="modal-scroll">
+      <div class="modal-title" id="slotTitle">Choose a Recipe</div>
+      <input type="text" id="slotSearch" placeholder="Search recipe..." oninput="renderSlots(this.value)" class="slot-search"/>
+      <div class="slot-list" id="slotList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ MAIN APP ════════════════ -->
+<main id="app" class="page-offset">
+
+  <!-- ══ HOME VIEW ══ -->
+  <div id="homeView" class="page-view">
+
+    <!-- HERO CAROUSEL -->
+    <div class="hero-section">
+      <div class="hero-track" id="heroTrack">
+        <div class="hero-slide active">
+          <div class="hero-slide-bg" style="background-image:url('https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=1400&q=80')"></div>
+          <div class="hero-slide-content">
+            <div class="hsc-eyebrow">🌱 NEW THIS WEEK</div>
+            <div class="hsc-title">Fresh Vegan<br/>Bowls Just Landed</div>
+            <div class="hsc-sub">Plant-based goodness, zero compromise, maximum flavour.</div>
+            <div class="hero-actions">
+              <button class="btn-hero-pri" onclick="pillFilter('Vegan',null)">Explore Vegan →</button>
+              <button class="btn-hero-sec" onclick="surpriseMe()">🎲 Surprise Me</button>
+            </div>
+          </div>
+        </div>
+        <div class="hero-slide">
+          <div class="hero-slide-bg" style="background-image:url('https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=1400&q=80')"></div>
+          <div class="hero-slide-content">
+            <div class="hsc-eyebrow">💪 HIGH PROTEIN WEEK</div>
+            <div class="hsc-title">Build Muscle,<br/>Eat Smart</div>
+            <div class="hsc-sub">Top-rated high-protein recipes, expertly curated for your goals.</div>
+            <div class="hero-actions">
+              <button class="btn-hero-pri" onclick="pillFilter('High Protein',null)">View High Protein →</button>
+              <button class="btn-hero-sec" onclick="openModal('mealPlanModal')">📅 Plan My Week</button>
+            </div>
+          </div>
+        </div>
+        <div class="hero-slide">
+          <div class="hero-slide-bg" style="background-image:url('https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=1400&q=80')"></div>
+          <div class="hero-slide-content">
+            <div class="hsc-eyebrow">🥑 KETO CORNER</div>
+            <div class="hsc-title">Low Carb,<br/>High Flavour</div>
+            <div class="hsc-sub">Discover the tastiest keto recipes — no sacrifice required.</div>
+            <div class="hero-actions">
+              <button class="btn-hero-pri" onclick="pillFilter('Keto',null)">Browse Keto →</button>
+              <button class="btn-hero-sec" onclick="pillFilter('Vegetarian',null)">🥗 Try Vegetarian</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="hero-arrow left" onclick="shiftHero(-1)">‹</button>
+      <button class="hero-arrow right" onclick="shiftHero(1)">›</button>
+      <div class="hero-dots" id="heroDots"></div>
+    </div>
+
+    <!-- STATS STRIP -->
+    <div class="stats-strip">
+      <div class="stats-inner">
+        <div class="stat-item"><div class="stat-icon">⚡</div><div class="stat-text"><strong>Quick Recipes</strong><small>Ready in 10 minutes</small></div></div>
+        <div class="stat-item"><div class="stat-icon">⭐</div><div class="stat-text"><strong>Expert Curated</strong><small>Dietician approved</small></div></div>
+        <div class="stat-item"><div class="stat-icon">📅</div><div class="stat-text"><strong>Meal Planner</strong><small>Plan your full week</small></div></div>
+        <div class="stat-item"><div class="stat-icon">🔒</div><div class="stat-text"><strong>100% Healthy</strong><small>Zero junk food</small></div></div>
+        <div class="stat-item"><div class="stat-icon">📲</div><div class="stat-text"><strong>Share & Save</strong><small>All social platforms</small></div></div>
+      </div>
+    </div>
+
+    <!-- SHOP LAYOUT -->
+    <div class="shop-wrapper">
+      <div class="shop-layout">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
+          <div class="sb-header">
+            <h3>Filters</h3>
+            <span class="sb-clear" onclick="clearFilters()">CLEAR ALL</span>
+          </div>
+
+          <div class="sb-group">
+            <div class="sb-group-title open" onclick="toggleGroup(this)">
+              <span>DIET CATEGORY</span><span class="sb-chevron">▲</span>
+            </div>
+            <div class="sb-body open">
+              <label class="sb-check"><input type="checkbox" name="cat" value="Vegetarian" onchange="applyFilters()"/><span>Vegetarian</span><span class="sb-count" id="cnt-Vegetarian">0</span></label>
+              <label class="sb-check"><input type="checkbox" name="cat" value="Vegan" onchange="applyFilters()"/><span>Vegan</span><span class="sb-count" id="cnt-Vegan">0</span></label>
+              <label class="sb-check"><input type="checkbox" name="cat" value="Keto" onchange="applyFilters()"/><span>Keto</span><span class="sb-count" id="cnt-Keto">0</span></label>
+              <label class="sb-check"><input type="checkbox" name="cat" value="High Protein" onchange="applyFilters()"/><span>High Protein</span><span class="sb-count" id="cnt-High Protein">0</span></label>
+            </div>
+          </div>
+
+          <div class="sb-group">
+            <div class="sb-group-title open" onclick="toggleGroup(this)">
+              <span>PREP TIME</span><span class="sb-chevron">▲</span>
+            </div>
+            <div class="sb-body open">
+              <label class="sb-check"><input type="checkbox" name="time" value="10" onchange="applyFilters()"/><span>Under 10 mins</span></label>
+              <label class="sb-check"><input type="checkbox" name="time" value="20" onchange="applyFilters()"/><span>Under 20 mins</span></label>
+              <label class="sb-check"><input type="checkbox" name="time" value="30" onchange="applyFilters()"/><span>Under 30 mins</span></label>
+              <label class="sb-check"><input type="checkbox" name="time" value="60" onchange="applyFilters()"/><span>Under 1 hour</span></label>
+            </div>
+          </div>
+
+          <div class="sb-group">
+            <div class="sb-group-title open" onclick="toggleGroup(this)">
+              <span>DIFFICULTY</span><span class="sb-chevron">▲</span>
+            </div>
+            <div class="sb-body open">
+              <label class="sb-check"><input type="checkbox" name="diff" value="Easy" onchange="applyFilters()"/><span>Easy</span></label>
+              <label class="sb-check"><input type="checkbox" name="diff" value="Medium" onchange="applyFilters()"/><span>Medium</span></label>
+              <label class="sb-check"><input type="checkbox" name="diff" value="Hard" onchange="applyFilters()"/><span>Hard</span></label>
+            </div>
+          </div>
+
+          <div class="sb-group">
+            <div class="sb-group-title open" onclick="toggleGroup(this)">
+              <span>MAX CALORIES</span><span class="sb-chevron">▲</span>
+            </div>
+            <div class="sb-body open">
+              <label class="sb-check"><input type="checkbox" name="cal" value="200" onchange="applyFilters()"/><span>Under 200 kcal</span></label>
+              <label class="sb-check"><input type="checkbox" name="cal" value="350" onchange="applyFilters()"/><span>Under 350 kcal</span></label>
+              <label class="sb-check"><input type="checkbox" name="cal" value="500" onchange="applyFilters()"/><span>Under 500 kcal</span></label>
+            </div>
+          </div>
+
+          <div class="sb-group">
+            <div class="sb-group-title open" onclick="toggleGroup(this)">
+              <span>BY INGREDIENT</span><span class="sb-chevron">▲</span>
+            </div>
+            <div class="sb-body open sb-input">
+              <input type="text" id="ingSearch" placeholder="e.g. avocado, chicken..." oninput="applyFilters()"/>
+            </div>
+          </div>
+
+          <div class="sb-group">
+            <div class="sb-group-title open" onclick="toggleGroup(this)">
+              <span>MIN RATING</span><span class="sb-chevron">▲</span>
+            </div>
+            <div class="sb-body open sb-stars">
+              <label class="sb-star-row"><input type="radio" name="rating" value="0" onchange="applyFilters()" checked/><span class="star-display">★★★★★</span><span style="font-size:.72rem;color:var(--text2);margin-left:4px;">Any</span></label>
+              <label class="sb-star-row"><input type="radio" name="rating" value="3" onchange="applyFilters()"/><span class="star-display">★★★</span><span style="font-size:.72rem;color:var(--text2);margin-left:4px;">3+ stars</span></label>
+              <label class="sb-star-row"><input type="radio" name="rating" value="4" onchange="applyFilters()"/><span class="star-display">★★★★</span><span style="font-size:.72rem;color:var(--text2);margin-left:4px;">4+ stars</span></label>
+              <label class="sb-star-row"><input type="radio" name="rating" value="5" onchange="applyFilters()"/><span class="star-display">★★★★★</span><span style="font-size:.72rem;color:var(--text2);margin-left:4px;">5 stars only</span></label>
+            </div>
+          </div>
+        </aside>
+
+        <!-- GRID AREA -->
+        <div class="grid-area">
+          <div class="grid-topbar">
+            <div class="gtb-left">
+              <span class="gtb-title" id="gridTitle">All Recipes</span>
+              <span class="gtb-count" id="gridCount">0 results</span>
+            </div>
+            <div class="gtb-right">
+              <select class="gtb-sort" id="sortSel" onchange="applyFilters()">
+                <option value="default">Relevance</option>
+                <option value="cal_asc">Calories ↑</option>
+                <option value="cal_desc">Calories ↓</option>
+                <option value="time_asc">Fastest Prep</option>
+                <option value="rating">Top Rated</option>
+                <option value="name_az">Name A–Z</option>
+              </select>
+              <div class="gtb-view-btns">
+                <button class="view-btn active" id="vGrid" onclick="setViewMode('grid')" title="Grid view">⊞</button>
+                <button class="view-btn" id="vList" onclick="setViewMode('list')" title="List view">☰</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="active-tags" id="activeTags"></div>
+
+          <!-- Skeleton -->
+          <div class="recipe-grid" id="skeletonGrid">
+            <div class="sk-card"><div class="sk-img"></div><div class="sk-body"><div class="sk-line w80"></div><div class="sk-line w60"></div><div class="sk-line w40"></div></div></div>
+            <div class="sk-card"><div class="sk-img"></div><div class="sk-body"><div class="sk-line w80"></div><div class="sk-line w60"></div><div class="sk-line w40"></div></div></div>
+            <div class="sk-card"><div class="sk-img"></div><div class="sk-body"><div class="sk-line w80"></div><div class="sk-line w60"></div><div class="sk-line w40"></div></div></div>
+            <div class="sk-card"><div class="sk-img"></div><div class="sk-body"><div class="sk-line w80"></div><div class="sk-line w60"></div><div class="sk-line w40"></div></div></div>
+            <div class="sk-card"><div class="sk-img"></div><div class="sk-body"><div class="sk-line w80"></div><div class="sk-line w60"></div><div class="sk-line w40"></div></div></div>
+            <div class="sk-card"><div class="sk-img"></div><div class="sk-body"><div class="sk-line w80"></div><div class="sk-line w60"></div><div class="sk-line w40"></div></div></div>
+          </div>
+
+          <div class="recipe-grid" id="recipeGrid" style="display:none;"></div>
+
+          <div class="empty-state" id="emptyState" style="display:none;">
+            <div class="es-icon">🔍</div>
+            <h3>No recipes found!</h3>
+            <p>Try adjusting your filters or searching for something different.</p>
+            <button class="btn-submit" style="width:auto;padding:11px 28px;margin-top:4px;" onclick="clearFilters()">Clear All Filters</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ FAVORITES VIEW ══ -->
+  <div id="favView" class="page-view" style="display:none;">
+    <div class="inner-page">
+      <button class="back-btn" onclick="goHome()">← Back to Recipes</button>
+      <div class="ip-header">
+        <h2>❤ My Saved Recipes</h2>
+        <span class="ip-count" id="favCount"></span>
+      </div>
+      <div class="recipe-grid" id="favGrid"></div>
+      <div class="empty-state" id="favEmpty" style="display:none;">
+        <div class="es-icon">🤍</div>
+        <h3>Your saved list is empty!</h3>
+        <p>Tap ❤ on any recipe card to save it here.</p>
+        <button class="btn-submit" style="width:auto;padding:11px 28px;margin-top:4px;" onclick="goHome()">Discover Recipes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ DETAIL VIEW ══ -->
+  <div id="detailView" class="page-view" style="display:none;">
+    <div class="inner-page">
+      <button class="back-btn" id="detailBackBtn" onclick="closeDetail()">← Back</button>
+      <div id="detailContainer"></div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ════════════════ BOTTOM NAV ════════════════ -->
+<nav class="bottom-nav">
+  <button class="bn-btn active" id="bnHome" onclick="goHome();setBN('bnHome')">
+    <span class="bn-icon">🏠</span><span>Home</span>
+  </button>
+  <button class="bn-btn" id="bnSearch" onclick="document.getElementById('globalSearch').focus();setBN('bnSearch')">
+    <span class="bn-icon">🔍</span><span>Search</span>
+  </button>
+  <button class="bn-btn" id="bnSaved" onclick="showFavorites();setBN('bnSaved')">
+    <span class="bn-icon">❤</span><span>Saved</span>
+  </button>
+  <button class="bn-btn" id="bnPlan" onclick="openModal('mealPlanModal');setBN('bnPlan')">
+    <span class="bn-icon">📅</span><span>Planner</span>
+  </button>
+  <button class="bn-btn" id="bnMenu" onclick="toggleDrawer();setBN('bnMenu')">
+    <span class="bn-icon">☰</span><span>Menu</span>
+  </button>
+</nav>
+
+<!-- ════════════════ JAVASCRIPT ════════════════ ≡≡≡≡≡≡≡≡≡ -->
   <script src="script.js"></script>
 </body>
 </html>
