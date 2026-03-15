@@ -1,1168 +1,852 @@
-/* =====================================================
-   DESIGN SYSTEM — CSS VARIABLES
-===================================================== */
-:root {
-  --pri:        #0f9d76;
-  --pri-dark:   #0a7a5c;
-  --pri-light:  #e6f7f2;
-  --acc:        #ff6b35;
-  --acc-dark:   #e5551f;
-  --gold:       #f59e0b;
-  --bg:         #f5f6fa;
-  --surface:    #ffffff;
-  --surface2:   #f0f1f6;
-  --border:     #e2e4ec;
-  --text:       #1a1d2e;
-  --text2:      #5a5f7d;
-  --text3:      #9498b0;
-  --nav-bg:     #0f9d76;
-  --nav-text:   #ffffff;
-  --shadow-xs:  0 1px 4px rgba(0,0,0,.06);
-  --shadow-sm:  0 2px 12px rgba(0,0,0,.08);
-  --shadow-md:  0 8px 32px rgba(0,0,0,.12);
-  --shadow-lg:  0 20px 60px rgba(0,0,0,.18);
-  --shadow-xl:  0 32px 80px rgba(0,0,0,.22);
-  --r-sm:       8px;
-  --r:          14px;
-  --r-lg:       20px;
-  --r-xl:       28px;
-  --tr:         0.25s cubic-bezier(.4,0,.2,1);
-  --tr-spring:  0.5s cubic-bezier(.34,1.56,.64,1);
-  --f-display:  'Syne', sans-serif;
-  --f-body:     'Plus Jakarta Sans', sans-serif;
-  --nav-h:      64px;
-  --pill-h:     48px;
+/* ====================================================
+   DATA
+==================================================== */
+const BASE = [
+  { id:'r1', name:'Vegetable Salad', category:'Vegetarian',
+    image:'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&q=80',
+    prepTime:10, difficulty:'Easy', calories:180, protein:4, carbs:22, fat:9,
+    ingredients:['2 Tomatoes','1 Cucumber','2 Carrots','2 tbsp Olive Oil','Salt & Pepper','Fresh Lemon Juice'],
+    steps:['Wash all vegetables under cold water.','Dice tomatoes and cucumber.','Peel and julienne carrots.','Combine in a large bowl.','Drizzle with olive oil and lemon juice.','Season, toss and serve.']},
+  { id:'r2', name:'Grilled Chicken', category:'High Protein',
+    image:'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=600&q=80',
+    prepTime:25, difficulty:'Medium', calories:320, protein:46, carbs:2, fat:14,
+    ingredients:['2 Chicken Breasts','1 tsp Salt','1 tsp Black Pepper','2 tbsp Olive Oil','1 tsp Garlic Powder','Fresh Herbs'],
+    steps:['Pat chicken dry.','Rub with oil, salt, pepper, garlic powder.','Heat grill pan until smoking.','Grill 6–7 mins each side.','Rest 5 minutes before slicing.','Garnish with herbs and serve.']},
+  { id:'r3', name:'Avocado Buddha Bowl', category:'Vegan',
+    image:'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80',
+    prepTime:20, difficulty:'Easy', calories:420, protein:14, carbs:52, fat:19,
+    ingredients:['1 Ripe Avocado','1 cup Quinoa','1 cup Chickpeas','Baby Spinach','Cherry Tomatoes','Tahini Dressing'],
+    steps:['Cook quinoa and let cool.','Roast chickpeas at 200°C for 20 mins.','Slice avocado into fans.','Arrange quinoa as the base.','Top with avocado, chickpeas, spinach.','Drizzle with tahini and serve.']},
+  { id:'r4', name:'Keto Egg Muffins', category:'Keto',
+    image:'https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=600&q=80',
+    prepTime:30, difficulty:'Easy', calories:210, protein:15, carbs:3, fat:16,
+    ingredients:['6 Eggs','100g Cheddar Cheese','50g Bacon Bits','1 Bell Pepper','1 tsp Butter','Salt & Pepper'],
+    steps:['Preheat oven to 180°C.','Whisk eggs, season.','Dice pepper, mix in.','Add cheese & bacon.','Fill muffin tin ¾ full.','Bake 18–22 mins until golden.']},
+  { id:'r5', name:'Lentil Soup', category:'Vegan',
+    image:'https://images.unsplash.com/photo-1547592180-85f173990554?w=600&q=80',
+    prepTime:35, difficulty:'Easy', calories:265, protein:13, carbs:44, fat:4,
+    ingredients:['1 cup Red Lentils','1 Onion','3 Garlic Cloves','1 can Tomatoes','1 tsp Cumin','Vegetable Stock'],
+    steps:['Sauté onion until golden.','Add garlic & cumin.','Add lentils, tomatoes, stock.','Simmer 25 minutes.','Blend partially.','Season and serve.']},
+  { id:'r6', name:'Caprese Skewers', category:'Vegetarian',
+    image:'https://images.unsplash.com/photo-1529042410759-befb1204b468?w=600&q=80',
+    prepTime:12, difficulty:'Easy', calories:155, protein:9, carbs:5, fat:11,
+    ingredients:['Fresh Mozzarella','Cherry Tomatoes','Fresh Basil','Balsamic Glaze','Olive Oil','Sea Salt'],
+    steps:['Thread mozzarella, basil, tomato onto skewers.','Arrange on platter.','Drizzle olive oil and balsamic.','Season with sea salt.','Serve immediately.']},
+  { id:'r7', name:'Salmon & Asparagus', category:'High Protein',
+    image:'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=600&q=80',
+    prepTime:22, difficulty:'Medium', calories:380, protein:42, carbs:8, fat:18,
+    ingredients:['2 Salmon Fillets','1 bunch Asparagus','2 tbsp Olive Oil','Lemon','Dill','Salt & Pepper'],
+    steps:['Preheat oven to 200°C.','Place salmon & asparagus on baking sheet.','Drizzle with oil & lemon.','Season with dill.','Bake 15–18 mins.','Garnish with lemon slices.']},
+  { id:'r8', name:'Keto Cauliflower Rice', category:'Keto',
+    image:'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80',
+    prepTime:15, difficulty:'Easy', calories:145, protein:5, carbs:9, fat:10,
+    ingredients:['1 head Cauliflower','2 tbsp Butter','3 Garlic Cloves','Parsley','Salt & Pepper','Parmesan'],
+    steps:['Pulse cauliflower until rice-like.','Melt butter in skillet.','Sauté garlic 1 min.','Add cauliflower, cook 5–7 mins.','Season with parsley.','Top with parmesan and serve.']},
+  { id:'r9', name:'Protein Smoothie Bowl', category:'High Protein',
+    image:'https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?w=600&q=80',
+    prepTime:8, difficulty:'Easy', calories:340, protein:28, carbs:36, fat:8,
+    ingredients:['1 scoop Protein Powder','1 Banana','1 cup Greek Yogurt','Almond Milk','Granola','Mixed Berries'],
+    steps:['Blend protein, banana, yogurt, milk until thick.','Pour into bowl.','Top with granola & berries.','Add honey if desired.','Serve immediately.']},
+  { id:'r10', name:'Stuffed Bell Peppers', category:'Vegetarian',
+    image:'https://images.unsplash.com/photo-1432139509613-5c4255815697?w=600&q=80',
+    prepTime:45, difficulty:'Medium', calories:295, protein:11, carbs:38, fat:12,
+    ingredients:['4 Bell Peppers','1 cup Brown Rice','1 can Black Beans','Corn','Cumin','Mozzarella'],
+    steps:['Preheat oven 190°C.','Remove pepper tops & seeds.','Mix rice, beans, corn, cumin.','Stuff peppers, top with mozzarella.','Bake 30–35 mins.','Serve hot.']},
+  { id:'r11', name:'Tofu Stir-fry', category:'Vegan',
+    image:'https://images.unsplash.com/photo-1563379926898-05f4575a45d8?w=600&q=80',
+    prepTime:20, difficulty:'Medium', calories:230, protein:16, carbs:18, fat:10,
+    ingredients:['300g Firm Tofu','Mixed Vegetables','Soy Sauce','Sesame Oil','Ginger','Garlic'],
+    steps:['Press tofu dry, cube.','Heat sesame oil in wok.','Fry tofu until golden.','Add veggies, ginger, garlic.','Stir-fry 4 mins.','Finish with soy sauce, serve.']},
+  { id:'r12', name:'Avocado Toast', category:'Vegetarian',
+    image:'https://images.unsplash.com/photo-1588137378633-dea1336ce1e2?w=600&q=80',
+    prepTime:8, difficulty:'Easy', calories:220, protein:6, carbs:26, fat:13,
+    ingredients:['2 Slices Sourdough','1 Ripe Avocado','Cherry Tomatoes','Red Pepper Flakes','Lemon','Salt'],
+    steps:['Toast sourdough until golden.','Mash avocado with lemon & salt.','Spread on toast.','Top with cherry tomatoes.','Sprinkle red pepper flakes.','Serve immediately.']}
+];
+
+/* ====================================================
+   STATE
+==================================================== */
+let recipes = [];
+let currentUser = null;
+let prevView = 'home';
+let currentHeroSlide = 0;
+let heroTimer = null;
+let viewMode = 'grid';
+let currentSlotKey = null;
+let activeFilterCat = 'All';
+
+const S = {
+  get:(k)=>{try{return JSON.parse(localStorage.getItem(k));}catch{return null;}},
+  set:(k,v)=>localStorage.setItem(k,JSON.stringify(v)),
+  del:(k)=>localStorage.removeItem(k)
+};
+
+/* ====================================================
+   INIT
+==================================================== */
+document.addEventListener('DOMContentLoaded', ()=>{
+  // Load state
+  const custom = S.get('nf_custom') || [];
+  recipes = [...BASE, ...custom];
+  currentUser = S.get('nf_user');
+  if(S.get('nf_dark')){
+    document.documentElement.setAttribute('data-theme','dark');
+    document.getElementById('darkBtn').textContent = '☀️';
+  }
+  updateUserUI();
+  updateFavBadge();
+  updateCategoryCounts();
+  initHero();
+
+  // Cursor glow
+  document.addEventListener('mousemove', e=>{
+    const g = document.getElementById('cursorGlow');
+    g.style.left = e.clientX+'px';
+    g.style.top  = e.clientY+'px';
+  });
+
+  // Dismiss loading screen with style
+  setTimeout(()=>{
+    document.getElementById('loadScreen').classList.add('hide');
+    // Show skeletons briefly then real grid
+    setTimeout(()=>{
+      document.getElementById('skeletonGrid').style.display='none';
+      document.getElementById('recipeGrid').style.display='';
+      applyFilters();
+    }, 900);
+  }, 1800);
+
+  // Navbar scroll
+  window.addEventListener('scroll',()=>{
+    const nb = document.getElementById('navbar');
+    nb.classList.toggle('scrolled', window.scrollY > 10);
+  });
+
+  // Close flyouts on outside click
+  document.addEventListener('click', e=>{
+    const uw = document.getElementById('userWrap');
+    if(!uw.contains(e.target)) closeUF();
+  });
+
+  // Build meal planner grid
+  renderMealPlan();
+  renderHeroDots();
+});
+
+/* ====================================================
+   HERO CAROUSEL
+==================================================== */
+function initHero(){
+  startHeroTimer();
+  document.querySelectorAll('.hero-slide-bg').forEach(bg=>{
+    // preload parallax
+  });
 }
-[data-theme="dark"] {
-  --bg:       #0d0f1a;
-  --surface:  #161928;
-  --surface2: #1e2235;
-  --border:   #2a2e45;
-  --text:     #eceef8;
-  --text2:    #8a90b0;
-  --text3:    #555a78;
-  --nav-bg:   #0a7a5c;
-  --shadow-sm: 0 2px 12px rgba(0,0,0,.3);
-  --shadow-md: 0 8px 32px rgba(0,0,0,.4);
-  --shadow-lg: 0 20px 60px rgba(0,0,0,.5);
+function renderHeroDots(){
+  const slides = document.querySelectorAll('.hero-slide');
+  const c = document.getElementById('heroDots');
+  c.innerHTML='';
+  slides.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='hero-dot'+(i===0?' active':'');
+    d.onclick=()=>goToSlide(i);
+    c.appendChild(d);
+  });
+}
+function goToSlide(i){
+  const slides = document.querySelectorAll('.hero-slide');
+  const dots   = document.querySelectorAll('.hero-dot');
+  slides[currentHeroSlide].classList.remove('active');
+  dots[currentHeroSlide].classList.remove('active');
+  currentHeroSlide = (i + slides.length) % slides.length;
+  document.getElementById('heroTrack').style.transform=`translateX(-${currentHeroSlide*100}%)`;
+  slides[currentHeroSlide].classList.add('active');
+  dots[currentHeroSlide].classList.add('active');
+  // Re-animate content
+  const content = slides[currentHeroSlide].querySelector('.hero-slide-content');
+  if(content){ content.style.animation='none'; void content.offsetWidth; content.style.animation=''; }
+}
+function shiftHero(dir){ clearTimeout(heroTimer); goToSlide(currentHeroSlide+dir); startHeroTimer(); }
+function startHeroTimer(){ heroTimer=setTimeout(()=>{goToSlide(currentHeroSlide+1);startHeroTimer();},5000); }
+
+/* ====================================================
+   FILTERING
+==================================================== */
+function getFilteredRecipes(){
+  const cats   = [...document.querySelectorAll('input[name="cat"]:checked')].map(i=>i.value);
+  const times  = [...document.querySelectorAll('input[name="time"]:checked')].map(i=>+i.value);
+  const diffs  = [...document.querySelectorAll('input[name="diff"]:checked')].map(i=>i.value);
+  const cals   = [...document.querySelectorAll('input[name="cal"]:checked')].map(i=>+i.value);
+  const ing    = (document.getElementById('ingSearch')?.value||'').trim().toLowerCase();
+  const search = document.getElementById('globalSearch').value.trim().toLowerCase();
+  const minRating = +([...document.querySelectorAll('input[name="rating"]')].find(r=>r.checked)?.value||0);
+  const sort   = document.getElementById('sortSel')?.value||'default';
+
+  let list = recipes.filter(r=>{
+    if(activeFilterCat !== 'All' && r.category !== activeFilterCat) return false;
+    if(cats.length && !cats.includes(r.category)) return false;
+    if(times.length && !times.some(t=>r.prepTime<=t)) return false;
+    if(diffs.length && !diffs.includes(r.difficulty)) return false;
+    if(cals.length && !cals.some(c=>r.calories<=c)) return false;
+    if(ing && !r.ingredients.some(i=>i.toLowerCase().includes(ing))) return false;
+    if(search && !r.name.toLowerCase().includes(search) && !r.category.toLowerCase().includes(search) && !r.ingredients.some(i=>i.toLowerCase().includes(search))) return false;
+    if(minRating>0 && getAvgRating(r.id)<minRating) return false;
+    return true;
+  });
+
+  // Sort
+  if(sort==='cal_asc')  list.sort((a,b)=>(a.calories||999)-(b.calories||999));
+  if(sort==='cal_desc') list.sort((a,b)=>(b.calories||0)-(a.calories||0));
+  if(sort==='time_asc') list.sort((a,b)=>(a.prepTime||999)-(b.prepTime||999));
+  if(sort==='rating')   list.sort((a,b)=>getAvgRating(b.id)-getAvgRating(a.id));
+  if(sort==='name_az')  list.sort((a,b)=>a.name.localeCompare(b.name));
+
+  return list;
 }
 
-/* =====================================================
-   RESET & BASE
-===================================================== */
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;font-size:16px;}
-body{
-  font-family:var(--f-body);
-  background:var(--bg);
-  color:var(--text);
-  line-height:1.65;
-  -webkit-font-smoothing:antialiased;
-  overflow-x:hidden;
-  transition:background .3s,color .3s;
-}
-img{display:block;width:100%;object-fit:cover;}
-a{text-decoration:none;color:inherit;}
-button{cursor:pointer;border:none;background:none;font-family:var(--f-body);}
-input,textarea,select{
-  font-family:var(--f-body);font-size:.9rem;color:var(--text);
-  background:var(--surface2);border:1.5px solid var(--border);
-  border-radius:var(--r-sm);padding:11px 14px;outline:none;width:100%;
-  transition:border-color var(--tr),box-shadow var(--tr),background var(--tr);
-}
-input:focus,textarea:focus,select:focus{
-  border-color:var(--pri);
-  box-shadow:0 0 0 3px rgba(15,157,118,.15);
-  background:var(--surface);
-}
-::-webkit-scrollbar{width:5px;}
-::-webkit-scrollbar-track{background:transparent;}
-::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
-
-/* =====================================================
-   LOADING SCREEN
-===================================================== */
-#loadScreen{
-  position:fixed;inset:0;z-index:9999;
-  background:#0f9d76;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  transition:opacity .6s ease, transform .6s ease;
-}
-#loadScreen.hide{opacity:0;pointer-events:none;transform:scale(1.04);}
-.ls-logo{
-  font-family:var(--f-display);font-size:2.8rem;font-weight:800;
-  color:#fff;letter-spacing:-.02em;
-  animation:lsPulse 1.4s ease infinite;
-}
-.ls-logo span{color:#b2f5e4;}
-@keyframes lsPulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.85;transform:scale(1.03);}}
-.ls-tagline{color:rgba(255,255,255,.7);font-size:.9rem;margin-top:8px;letter-spacing:.06em;}
-.ls-bar-wrap{
-  width:200px;height:3px;background:rgba(255,255,255,.25);
-  border-radius:2px;margin-top:36px;overflow:hidden;
-}
-.ls-bar{height:100%;background:#fff;border-radius:2px;animation:lsBar 1.6s ease forwards;}
-@keyframes lsBar{from{width:0;}to{width:100%;}}
-.ls-dots{display:flex;gap:8px;margin-top:24px;}
-.ls-dot{
-  width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.4);
-  animation:lsDot 1.2s ease infinite;
-}
-.ls-dot:nth-child(2){animation-delay:.2s;}
-.ls-dot:nth-child(3){animation-delay:.4s;}
-@keyframes lsDot{0%,80%,100%{transform:scale(1);opacity:.4;}40%{transform:scale(1.4);opacity:1;}}
-
-/* =====================================================
-   CURSOR GLOW (desktop)
-===================================================== */
-.cursor-glow{
-  position:fixed;width:400px;height:400px;border-radius:50%;
-  background:radial-gradient(circle,rgba(15,157,118,.06) 0%,transparent 70%);
-  pointer-events:none;z-index:0;transform:translate(-50%,-50%);
-  transition:transform .06s linear;
+function applyFilters(){
+  const list = getFilteredRecipes();
+  renderGrid(list);
+  updateGridTopbar(list);
+  renderActiveTags();
 }
 
-/* =====================================================
-   TOP NAVBAR
-===================================================== */
-.navbar{
-  position:fixed;top:0;left:0;right:0;z-index:500;
-  height:var(--nav-h);
-  background:var(--nav-bg);
-  box-shadow:0 2px 16px rgba(0,0,0,.15);
-  transition:background .3s,box-shadow .3s;
-}
-.navbar.scrolled{box-shadow:0 4px 24px rgba(0,0,0,.22);}
-.nav-inner{
-  max-width:1440px;margin:0 auto;height:100%;
-  padding:0 20px;display:flex;align-items:center;gap:16px;
+function updateGridTopbar(list){
+  document.getElementById('gridTitle').textContent = activeFilterCat==='All' ? 'All Recipes' : activeFilterCat;
+  document.getElementById('gridCount').textContent = list.length+' result'+(list.length!==1?'s':'');
 }
 
-/* Logo */
-.nav-logo{
-  display:flex;align-items:center;gap:10px;
-  font-family:var(--f-display);font-weight:800;font-size:1.4rem;
-  color:#fff;white-space:nowrap;flex-shrink:0;
-  transition:transform var(--tr-spring);
-}
-.nav-logo:hover{transform:scale(1.04);}
-.nav-logo-icon{
-  width:36px;height:36px;border-radius:10px;
-  background:rgba(255,255,255,.2);
-  display:flex;align-items:center;justify-content:center;
-  font-size:1.2rem;backdrop-filter:blur(4px);
-}
-.nav-logo-sub{font-size:.62rem;font-weight:400;color:rgba(255,255,255,.7);display:block;letter-spacing:.06em;margin-top:-2px;}
-
-/* Search */
-.nav-search-wrap{flex:1;max-width:560px;position:relative;}
-.nav-search{
-  display:flex;align-items:center;
-  background:#fff;border-radius:var(--r-sm);
-  overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.12);
-  transition:box-shadow var(--tr),transform var(--tr);
-}
-.nav-search:focus-within{
-  box-shadow:0 4px 20px rgba(0,0,0,.2);
-  transform:scaleX(1.01);
-}
-.nav-search input{
-  background:none;border:none;box-shadow:none;
-  font-size:.9rem;color:#333;padding:0 14px;height:42px;flex:1;
-  border-radius:0;
-}
-.nav-search input::placeholder{color:#999;}
-.nav-search input:focus{box-shadow:none;}
-.ns-btn{
-  height:42px;padding:0 20px;background:var(--acc);color:#fff;
-  font-size:.85rem;font-weight:700;letter-spacing:.03em;
-  display:flex;align-items:center;gap:7px;
-  transition:background var(--tr);flex-shrink:0;
-}
-.ns-btn:hover{background:var(--acc-dark);}
-.ns-btn svg{flex-shrink:0;}
-
-/* Search suggestions */
-.search-sug{
-  position:absolute;top:calc(100% + 6px);left:0;right:0;
-  background:var(--surface);border-radius:var(--r);
-  box-shadow:var(--shadow-lg);overflow:hidden;z-index:100;
-  display:none;
-  animation:sugIn .2s ease;
-}
-@keyframes sugIn{from{opacity:0;transform:translateY(-8px);}to{opacity:1;transform:translateY(0);}}
-.search-sug.show{display:block;}
-.sug-item{
-  display:flex;align-items:center;gap:12px;
-  padding:11px 16px;cursor:pointer;font-size:.88rem;
-  transition:background var(--tr);
-}
-.sug-item:hover{background:var(--surface2);}
-.sug-icon{font-size:1.1rem;flex-shrink:0;}
-
-/* Nav right */
-.nav-right{display:flex;align-items:center;gap:6px;margin-left:auto;}
-.nav-btn{
-  display:flex;align-items:center;gap:6px;
-  padding:8px 14px;border-radius:var(--r-sm);
-  font-size:.82rem;font-weight:600;color:#fff;
-  transition:background var(--tr),transform var(--tr);
-  white-space:nowrap;
-}
-.nav-btn:hover{background:rgba(255,255,255,.15);transform:translateY(-1px);}
-.nav-icon-btn{
-  width:38px;height:38px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:1rem;color:#fff;
-  background:rgba(255,255,255,.12);
-  transition:background var(--tr),transform var(--tr-spring);
-}
-.nav-icon-btn:hover{background:rgba(255,255,255,.25);transform:scale(1.12);}
-
-/* User menu */
-.user-wrap{position:relative;}
-.user-btn{
-  display:flex;align-items:center;gap:8px;
-  padding:6px 14px;border-radius:var(--r-sm);
-  background:rgba(255,255,255,.15);color:#fff;
-  font-size:.82rem;font-weight:600;
-  transition:background var(--tr),transform var(--tr);
-}
-.user-btn:hover{background:rgba(255,255,255,.25);}
-.user-avatar{
-  width:26px;height:26px;border-radius:50%;
-  background:var(--acc);color:#fff;
-  display:flex;align-items:center;justify-content:center;
-  font-size:.72rem;font-weight:700;
-}
-.user-flyout{
-  position:absolute;top:calc(100% + 10px);right:0;
-  width:220px;background:var(--surface);
-  border-radius:var(--r);box-shadow:var(--shadow-lg);
-  border:1px solid var(--border);overflow:hidden;
-  display:none;z-index:200;
-  animation:flyIn .22s var(--tr-spring);
-}
-@keyframes flyIn{from{opacity:0;transform:translateY(-10px) scale(.95);}to{opacity:1;transform:translateY(0) scale(1);}}
-.uf-user-info{padding:16px;border-bottom:1px solid var(--border);background:var(--surface2);}
-.uf-name{font-weight:700;font-size:.9rem;}
-.uf-email{font-size:.75rem;color:var(--text2);margin-top:2px;}
-.uf-item{
-  display:flex;align-items:center;gap:10px;
-  padding:12px 16px;font-size:.87rem;color:var(--text);
-  transition:background var(--tr);cursor:pointer;
-}
-.uf-item:hover{background:var(--surface2);}
-.uf-item.danger{color:#e53e3e;}
-.uf-divider{height:1px;background:var(--border);}
-
-/* Badge */
-.badge{
-  min-width:18px;height:18px;border-radius:9px;
-  background:var(--acc);color:#fff;
-  font-size:.62rem;font-weight:700;
-  display:inline-flex;align-items:center;justify-content:center;
-  padding:0 4px;
+function updateCategoryCounts(){
+  ['Vegetarian','Vegan','Keto','High Protein'].forEach(cat=>{
+    const el = document.getElementById('cnt-'+cat);
+    if(el) el.textContent = recipes.filter(r=>r.category===cat).length;
+  });
 }
 
-/* Hamburger */
-.ham-btn{display:none;flex-direction:column;gap:5px;padding:6px;}
-.ham-btn span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:var(--tr);}
-.ham-btn.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
-.ham-btn.open span:nth-child(2){opacity:0;}
-.ham-btn.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+function renderActiveTags(){
+  const wrap = document.getElementById('activeTags');
+  wrap.innerHTML='';
+  const cats  = [...document.querySelectorAll('input[name="cat"]:checked')].map(i=>i.value);
+  const times = [...document.querySelectorAll('input[name="time"]:checked')].map(i=>i.value+'min');
+  const diffs = [...document.querySelectorAll('input[name="diff"]:checked')].map(i=>i.value);
+  const cals  = [...document.querySelectorAll('input[name="cal"]:checked')].map(i=>'<'+i.value+'kcal');
+  const ing   = document.getElementById('ingSearch')?.value.trim();
+  const tags  = [...cats,...times,...diffs,...cals,...(ing?[ing]:[])];
+  tags.forEach(t=>{
+    const d=document.createElement('div');
+    d.className='atag';
+    d.innerHTML=`${t}<span class="atag-x" onclick="removeTag('${t}')">✕</span>`;
+    wrap.appendChild(d);
+  });
+}
 
-/* =====================================================
-   CATEGORY PILL BAR
-===================================================== */
-.pill-bar{
-  position:fixed;top:var(--nav-h);left:0;right:0;z-index:490;
-  height:var(--pill-h);
-  background:var(--surface);
-  border-bottom:1px solid var(--border);
-  box-shadow:var(--shadow-xs);
-  overflow:hidden;
-  transition:transform .3s ease;
+function removeTag(val){
+  // Uncheck matching checkbox
+  document.querySelectorAll('input[type="checkbox"]').forEach(cb=>{
+    const v = cb.value;
+    if(v===val || val===v+'min' || val==='<'+v+'kcal') cb.checked=false;
+  });
+  const ingEl = document.getElementById('ingSearch');
+  if(ingEl && ingEl.value.trim()===val) ingEl.value='';
+  applyFilters();
 }
-.pill-bar.hide-bar{transform:translateY(-100%);}
-.pill-inner{
-  max-width:1440px;margin:0 auto;height:100%;
-  padding:0 20px;
-  display:flex;align-items:center;gap:8px;
-  overflow-x:auto;
-  scrollbar-width:none;
-}
-.pill-inner::-webkit-scrollbar{display:none;}
-.pill{
-  display:flex;align-items:center;gap:6px;
-  padding:7px 18px;border-radius:40px;
-  font-size:.82rem;font-weight:600;
-  border:1.5px solid var(--border);
-  color:var(--text2);background:var(--surface);
-  white-space:nowrap;flex-shrink:0;
-  transition:all var(--tr);
-  position:relative;overflow:hidden;
-}
-.pill::after{
-  content:'';position:absolute;inset:0;
-  background:var(--pri);opacity:0;
-  transition:opacity var(--tr);
-}
-.pill:hover{border-color:var(--pri);color:var(--pri);transform:translateY(-1px);box-shadow:var(--shadow-xs);}
-.pill.active{background:var(--pri);border-color:var(--pri);color:#fff;box-shadow:0 3px 12px rgba(15,157,118,.35);}
 
-/* =====================================================
+function clearFilters(){
+  document.querySelectorAll('input[name="cat"],input[name="time"],input[name="diff"],input[name="cal"]').forEach(cb=>cb.checked=false);
+  const r0 = document.querySelector('input[name="rating"][value="0"]');
+  if(r0) r0.checked=true;
+  const ingEl = document.getElementById('ingSearch');
+  if(ingEl) ingEl.value='';
+  activeFilterCat='All';
+  document.querySelectorAll('.pill').forEach(p=>p.classList.toggle('active',p.dataset.cat==='All'));
+  applyFilters();
+}
+
+function pillFilter(cat, btn){
+  activeFilterCat = cat;
+  document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  else{
+    const match = document.querySelector(`.pill[data-cat="${cat}"]`);
+    if(match) match.classList.add('active');
+  }
+  applyFilters();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ====================================================
+   RENDER GRID
+==================================================== */
+function renderGrid(list){
+  const grid  = document.getElementById('recipeGrid');
+  const empty = document.getElementById('emptyState');
+  grid.innerHTML='';
+  if(!list.length){ empty.style.display=''; grid.style.display='none'; return; }
+  empty.style.display='none';
+  grid.style.display='';
+  grid.className='recipe-grid'+(viewMode==='list'?' list-view':'');
+  list.forEach((r,i)=>{ const card=buildCard(r); card.style.animationDelay=`${i*0.04}s`; grid.appendChild(card); });
+}
+
+function buildCard(recipe, inFavView=false){
+  const idx   = recipes.findIndex(r=>r.id===recipe.id);
+  const isFav = isSaved(recipe.id);
+  const avg   = getAvgRating(recipe.id);
+  const cnt   = getRatingCount(recipe.id);
+  const tagCls= 'tag-'+(recipe.category||'Custom').replace(/\s+/g,'-');
+
+  const card  = document.createElement('div');
+  card.className='recipe-card';
+  card.innerHTML=`
+    <div class="rc-img" onclick="showDetail(${idx})">
+      <img src="${recipe.image||'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=400&q=70'}" alt="${recipe.name}" loading="lazy"/>
+      <span class="rc-tag ${tagCls}">${recipe.category||'Custom'}</span>
+      <button class="rc-fav ${isFav?'saved':''}" onclick="event.stopPropagation();toggleSave('${recipe.id}',this)" title="${isFav?'Remove':'Save'}">${isFav?'❤️':'🤍'}</button>
+      <div class="rc-share-overlay">
+        <button class="rc-share-btn" onclick="event.stopPropagation();quickShare('${recipe.id}','twitter')">🐦</button>
+        <button class="rc-share-btn" onclick="event.stopPropagation();quickShare('${recipe.id}','facebook')">📘</button>
+        <button class="rc-share-btn" onclick="event.stopPropagation();quickShare('${recipe.id}','whatsapp')">💬</button>
+      </div>
+    </div>
+    <div class="rc-body">
+      <div class="rc-name" onclick="showDetail(${idx})">${recipe.name}</div>
+      <div class="rc-nutrition">
+        ${recipe.calories?`<span class="nutr-chip nc-cal">🔥 ${recipe.calories} kcal</span>`:''}
+        ${recipe.protein ?`<span class="nutr-chip nc-pro">💪 ${recipe.protein}g</span>`:''}
+        ${recipe.carbs   ?`<span class="nutr-chip nc-carb">🌾 ${recipe.carbs}g</span>`:''}
+      </div>
+      <div class="rc-meta">
+        ${recipe.prepTime ?`<span class="rc-meta-chip">⏱ ${recipe.prepTime} min</span>`:''}
+        ${recipe.difficulty?`<span class="diff-pill dp-${recipe.difficulty}">${recipe.difficulty}</span>`:''}
+      </div>
+      <div class="rc-stars">
+        <div class="stars-row">${buildStars(avg,recipe.id,true)}</div>
+        <span class="rc-rating-txt">${cnt>0?`(${cnt})`:'Rate it'}</span>
+      </div>
+      <div class="rc-actions">
+        <button class="btn-view" onclick="showDetail(${idx})">View Recipe</button>
+        <button class="btn-plan" onclick="event.stopPropagation();quickAddToPlan('${recipe.id}')" title="Add to planner">📅</button>
+      </div>
+    </div>`;
+  return card;
+}
+
+function setViewMode(mode){
+  viewMode=mode;
+  document.getElementById('vGrid').classList.toggle('active', mode==='grid');
+  document.getElementById('vList').classList.toggle('active', mode==='list');
+  applyFilters();
+}
+
+/* ====================================================
+   DETAIL VIEW
+==================================================== */
+function showDetail(idx){
+  const r = recipes[idx];
+  if(!r) return;
+  prevView = getCurrentView();
+  const isFav = isSaved(r.id);
+  const avg   = getAvgRating(r.id);
+  const cnt   = getRatingCount(r.id);
+  const shareText = encodeURIComponent(`Check out: ${r.name} 🥗 #HealthyEating #NutriFind`);
+  const shareUrl  = encodeURIComponent(window.location.href+'#'+r.id);
+
+  document.getElementById('detailContainer').innerHTML=`
+    <div class="detail-hero">
+      <img src="${r.image||'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=900&q=80'}" alt="${r.name}"/>
+      <div class="detail-hero-overlay">
+        <div class="dho-content">
+          <div class="dho-tag">${r.category||'Custom'}</div>
+          <div class="dho-title">${r.name}</div>
+        </div>
+        <div class="dho-actions">
+          <button class="dho-btn ${isFav?'pri':''}" id="dFavBtn" onclick="toggleSave('${r.id}',this)">${isFav?'❤️ Saved':'🤍 Save'}</button>
+          <button class="dho-btn" onclick="printPage()">🖨 Print</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="nutr-banner">
+      ${r.calories?`<div class="nutr-card"><div class="nutr-val">${r.calories}</div><div class="nutr-lbl">Calories</div></div>`:''}
+      ${r.protein ?`<div class="nutr-card"><div class="nutr-val">${r.protein}g</div><div class="nutr-lbl">Protein</div></div>`:''}
+      ${r.carbs   ?`<div class="nutr-card"><div class="nutr-val">${r.carbs}g</div><div class="nutr-lbl">Carbs</div></div>`:''}
+      ${r.fat     ?`<div class="nutr-card"><div class="nutr-val">${r.fat}g</div><div class="nutr-lbl">Fat</div></div>`:''}
+      ${r.prepTime?`<div class="nutr-card"><div class="nutr-val">${r.prepTime}</div><div class="nutr-lbl">Min Prep</div></div>`:''}
+      ${r.difficulty?`<div class="nutr-card"><div class="nutr-val" style="font-size:1rem">${r.difficulty}</div><div class="nutr-lbl">Difficulty</div></div>`:''}
+    </div>
+
+    <div class="detail-rating-row">
+      <span class="dr-label">Rate this recipe:</span>
+      <div class="dr-stars">${buildDetailStars(avg,r.id)}</div>
+      <span class="dr-count">${cnt>0?`Avg ${avg.toFixed(1)} (${cnt} rating${cnt>1?'s':''})`:'Be the first to rate!'}</span>
+    </div>
+
+    <div class="detail-action-bar">
+      <button class="dab-btn pri-btn" onclick="toggleSave('${r.id}',null)">${isFav?'❤️ Remove from Saved':'🤍 Save Recipe'}</button>
+      <button class="dab-btn" onclick="openModal('mealPlanModal')">📅 Add to Planner</button>
+      <button class="dab-btn" onclick="toggleShare('share-${r.id}')">📤 Share</button>
+      <button class="dab-btn" onclick="printPage()">🖨 Print</button>
+    </div>
+
+    <div class="social-row" id="share-${r.id}" style="display:none;">
+      <a class="soc-btn soc-tw" href="https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}" target="_blank" rel="noopener">🐦 Twitter</a>
+      <a class="soc-btn soc-fb" href="https://www.facebook.com/sharer/sharer.php?u=${shareUrl}" target="_blank" rel="noopener">📘 Facebook</a>
+      <a class="soc-btn soc-wa" href="https://wa.me/?text=${shareText}%20${shareUrl}" target="_blank" rel="noopener">💬 WhatsApp</a>
+      <button class="soc-btn soc-ig" onclick="igShare('${r.name}')">📸 Instagram</button>
+      <button class="soc-btn soc-cp" onclick="copyLink('${r.id}')">🔗 Copy Link</button>
+    </div>
+
+    <div class="detail-body">
+      <div class="detail-section">
+        <h3>🛒 Ingredients</h3>
+        <ul class="ingredient-list">${r.ingredients.map(i=>`<li><span class="ing-dot">•</span>${i}</li>`).join('')}</ul>
+      </div>
+      <div class="detail-section">
+        <h3>👨‍🍳 Cooking Steps</h3>
+        <ol class="steps-list">${r.steps.map((s,i)=>`<li class="step-item"><div class="step-num">${i+1}</div><div class="step-txt">${s}</div></li>`).join('')}</ol>
+      </div>
+    </div>
+
+    <div class="related-section">
+      <h3>You may also like</h3>
+      <div class="related-scroll" id="relatedScroll"></div>
+    </div>`;
+
+  // Render related
+  const related = recipes.filter(x=>x.id!==r.id&&x.category===r.category).slice(0,8);
+  const rs = document.getElementById('relatedScroll');
+  related.forEach(rel=>{
+    const ri = recipes.findIndex(x=>x.id===rel.id);
+    rs.innerHTML+=`<div class="related-card" onclick="showDetail(${ri})">
+      <div class="related-img"><img src="${rel.image||''}" alt="${rel.name}" loading="lazy"/></div>
+      <div class="related-info"><div class="related-name">${rel.name}</div><div class="related-cat">${rel.category}</div></div>
+    </div>`;
+  });
+
+  document.getElementById('detailBackBtn').onclick = closeDetail;
+  switchView('detail');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function closeDetail(){
+  if(prevView==='favorites') showFavorites();
+  else goHome();
+}
+
+function toggleShare(id){
+  const el = document.getElementById(id);
+  if(!el) return;
+  const open = el.style.display==='flex';
+  el.style.display = open?'none':'flex';
+  if(!open) el.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function quickShare(id,platform){
+  const r = recipes.find(x=>x.id===id);
+  if(!r) return;
+  const text = encodeURIComponent(`${r.name} 🥗 #HealthyEating`);
+  const url  = encodeURIComponent(window.location.href);
+  const urls = {twitter:`https://twitter.com/intent/tweet?text=${text}&url=${url}`,facebook:`https://www.facebook.com/sharer/sharer.php?u=${url}`,whatsapp:`https://wa.me/?text=${text}%20${url}`};
+  if(urls[platform]) window.open(urls[platform],'_blank','noopener,width=600,height=400');
+}
+function igShare(name){ navigator.clipboard.writeText(`${name} 🥗 #HealthyEating #NutriFind`).then(()=>toast('📋 Caption copied for Instagram!')); }
+function copyLink(id){ navigator.clipboard.writeText(window.location.href+'#'+id).then(()=>toast('🔗 Link copied to clipboard!')); }
+function printPage(){ window.print(); }
+
+/* ====================================================
+   STARS
+==================================================== */
+function buildStars(avg,id,readonly){
+  let h='';
+  for(let i=1;i<=5;i++){
+    const on=i<=Math.round(avg);
+    h+=readonly
+      ? `<span class="star ${on?'on':'off'}">${on?'★':'☆'}</span>`
+      : `<span class="star ${on?'on':'off'}" onclick="rateRecipe('${id}',${i})" title="Rate ${i} stars">${on?'★':'☆'}</span>`;
+  }
+  return h;
+}
+function buildDetailStars(avg,id){
+  let h='';
+  for(let i=1;i<=5;i++){
+    const on=i<=Math.round(avg);
+    h+=`<span class="dr-star ${on?'on':'off'}" onclick="rateRecipe('${id}',${i})">${on?'★':'☆'}</span>`;
+  }
+  return h;
+}
+function rateRecipe(id,stars){
+  const ratings = S.get('nf_rating_'+id)||[];
+  ratings.push(stars);
+  S.set('nf_rating_'+id,ratings);
+  toast(`⭐ Rated ${stars} star${stars>1?'s':''}!`);
+  // refresh rating display
+  const avg=getAvgRating(id);const cnt=getRatingCount(id);
+  const dsEl=document.querySelector('.dr-stars');
+  if(dsEl) dsEl.innerHTML=buildDetailStars(avg,id);
+  const dcEl=document.querySelector('.dr-count');
+  if(dcEl) dcEl.textContent=`Avg ${avg.toFixed(1)} (${cnt} rating${cnt>1?'s':''})`;
+}
+function getAvgRating(id){ const r=S.get('nf_rating_'+id)||[]; return r.length?r.reduce((a,b)=>a+b,0)/r.length:0; }
+function getRatingCount(id){ return (S.get('nf_rating_'+id)||[]).length; }
+
+/* ====================================================
+   FAVORITES
+==================================================== */
+function isSaved(id){ return (S.get('nf_favs')||[]).includes(id); }
+function toggleSave(id,btn){
+  let favs = S.get('nf_favs')||[];
+  const now = favs.includes(id);
+  if(now){ favs=favs.filter(f=>f!==id); toast('Removed from saved.','info'); }
+  else{ favs.push(id); toast('❤️ Saved to your list!'); }
+  S.set('nf_favs',favs);
+  // Sync all fav buttons
+  document.querySelectorAll(`.rc-fav`).forEach(b=>{
+    if(b.getAttribute('onclick')&&b.getAttribute('onclick').includes(`'${id}'`)){
+      b.textContent=favs.includes(id)?'❤️':'🤍';
+      b.classList.toggle('saved',favs.includes(id));
+    }
+  });
+  if(btn){
+    btn.textContent=favs.includes(id)?'❤️ Saved':'🤍 Save';
+    btn.classList.toggle('pri',favs.includes(id));
+  }
+  // Re-sync detail fav btn
+  const dfb=document.getElementById('dFavBtn');
+  if(dfb){ dfb.textContent=favs.includes(id)?'❤️ Saved':'🤍 Save'; dfb.classList.toggle('pri',favs.includes(id)); }
+  updateFavBadge();
+  if(getCurrentView()==='favorites') showFavorites();
+}
+function updateFavBadge(){
+  const c=(S.get('nf_favs')||[]).length;
+  const b=document.getElementById('favBadge');
+  b.style.display=c>0?'':'none';
+  b.textContent=c;
+}
+function showFavorites(){
+  const favIds = S.get('nf_favs')||[];
+  const list   = recipes.filter(r=>favIds.includes(r.id));
+  const grid=document.getElementById('favGrid');
+  const empty=document.getElementById('favEmpty');
+  document.getElementById('favCount').textContent=list.length+' recipe'+(list.length!==1?'s':'');
+  grid.innerHTML='';
+  if(!list.length){ empty.style.display=''; return; }
+  empty.style.display='none';
+  grid.className='recipe-grid';
+  list.forEach((r,i)=>{ const c=buildCard(r,true); c.style.animationDelay=`${i*0.05}s`; grid.appendChild(c); });
+  prevView='home';
+  switchView('favorites');
+  window.scrollTo({top:0,behavior:'smooth'});
+  setBN('bnSaved');
+}
+
+/* ====================================================
+   SEARCH
+==================================================== */
+function handleSearch(val){
+  applyFilters();
+  hideSuggestions();
+}
+function showSuggestions(){
+  const val = document.getElementById('globalSearch').value.trim().toLowerCase();
+  const sug = document.getElementById('searchSug');
+  if(!val){ sug.classList.remove('show'); return; }
+  const matches = recipes.filter(r=>r.name.toLowerCase().includes(val)||r.category.toLowerCase().includes(val)).slice(0,6);
+  if(!matches.length){ sug.classList.remove('show'); return; }
+  sug.innerHTML = matches.map((r,i)=>`
+    <div class="sug-item" onclick="document.getElementById('globalSearch').value='${r.name}';handleSearch('${r.name}');showDetail(${recipes.indexOf(r)})">
+      <span class="sug-icon">🔍</span>${r.name} <span style="font-size:.75rem;color:var(--text2);margin-left:auto;">${r.category}</span>
+    </div>`).join('');
+  sug.classList.add('show');
+}
+function hideSuggestions(){ document.getElementById('searchSug').classList.remove('show'); }
+
+/* ====================================================
+   MEAL PLANNER
+==================================================== */
+const DAYS=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+const MEALS=['Breakfast','Lunch','Dinner'];
+
+function renderMealPlan(){
+  const plan = S.get('nf_plan')||{};
+  const g = document.getElementById('mpGrid');
+  g.innerHTML='';
+  g.innerHTML+=`<div class="mp-head"></div>${MEALS.map(m=>`<div class="mp-head">${m}</div>`).join('')}`;
+  DAYS.forEach(day=>{
+    g.innerHTML+=`<div class="mp-day">${day.slice(0,3)}</div>`;
+    MEALS.forEach(meal=>{
+      const key=`${day}_${meal}`;
+      const rid=plan[key];
+      const r=rid?recipes.find(x=>x.id===rid):null;
+      g.innerHTML+=`<div class="mp-slot ${r?'filled':''}" onclick="openSlotPicker('${key}')">
+        ${r?`<div><div class="mp-slot-name">${r.name}</div><span class="mp-slot-clear" onclick="event.stopPropagation();clearSlot('${key}')">✕ clear</span></div>`
+           :`<span class="mp-empty">+ Add</span>`}
+      </div>`;
+    });
+  });
+}
+function clearSlot(key){ const p=S.get('nf_plan')||{}; delete p[key]; S.set('nf_plan',p); renderMealPlan(); }
+function clearMealPlan(){ S.del('nf_plan'); renderMealPlan(); toast('🗑 Meal plan cleared.'); }
+function shareMealPlan(){
+  const plan=S.get('nf_plan')||{};
+  let txt='📅 My Weekly Meal Plan 🥗\n\n';
+  DAYS.forEach(d=>{
+    const ms=MEALS.map(m=>{const r=recipes.find(x=>x.id===plan[`${d}_${m}`]);return r?`${m}: ${r.name}`:null;}).filter(Boolean);
+    if(ms.length) txt+=`${d}:\n  ${ms.join('\n  ')}\n\n`;
+  });
+  if(txt.trim()==='📅 My Weekly Meal Plan 🥗'){ toast('Your plan is empty!','warn'); return; }
+  navigator.clipboard.writeText(txt).then(()=>toast('📋 Meal plan copied to clipboard!'));
+}
+function openSlotPicker(key){
+  currentSlotKey=key;
+  const [day,meal]=key.split('_');
+  document.getElementById('slotTitle').textContent=`${meal} — ${day}`;
+  document.getElementById('slotSearch').value='';
+  renderSlots('');
+  openModal('slotModal');
+}
+function renderSlots(q){
+  const list=recipes.filter(r=>r.name.toLowerCase().includes(q.toLowerCase()));
+  document.getElementById('slotList').innerHTML=list.map(r=>`
+    <div class="slot-item" onclick="assignSlot('${r.id}')">
+      <img class="slot-img" src="${r.image||''}" alt="${r.name}" loading="lazy"/>
+      <div><div class="slot-name">${r.name}</div><div class="slot-cat">${r.category}</div></div>
+    </div>`).join('');
+}
+function assignSlot(id){
+  if(!currentSlotKey) return;
+  const p=S.get('nf_plan')||{};
+  p[currentSlotKey]=id;
+  S.set('nf_plan',p);
+  closeModal('slotModal');
+  renderMealPlan();
+  const r=recipes.find(x=>x.id===id);
+  toast(`📅 "${r?.name}" added to plan!`);
+}
+function quickAddToPlan(id){
+  openModal('mealPlanModal');
+  toast('📅 Click any slot to assign this recipe!');
+}
+
+/* ====================================================
+   ADD RECIPE
+==================================================== */
+function openAddRecipe(){
+  if(!currentUser){ toast('Please login to add recipes!','warn'); openModal('loginModal'); return; }
+  openModal('addRecipeModal');
+}
+function saveRecipe(){
+  const name = document.getElementById('ar-name').value.trim();
+  const cat  = document.getElementById('ar-cat').value;
+  const img  = document.getElementById('ar-img').value.trim();
+  const time = +document.getElementById('ar-time').value||0;
+  const diff = document.getElementById('ar-diff').value;
+  const cal  = +document.getElementById('ar-cal').value||0;
+  const pro  = +document.getElementById('ar-pro').value||0;
+  const carb = +document.getElementById('ar-carb').value||0;
+  const ings = document.getElementById('ar-ing').value.trim().split('\n').map(l=>l.trim()).filter(Boolean);
+  const steps= document.getElementById('ar-steps').value.trim().split('\n').map(l=>l.trim()).filter(Boolean);
+  const err  = document.getElementById('arErr');
+  err.textContent='';
+  if(!name){ err.textContent='Recipe name is required.'; return; }
+  if(!cat) { err.textContent='Please select a category.'; return; }
+  if(!time){ err.textContent='Please enter prep time.'; return; }
+  if(!ings.length){ err.textContent='Add at least one ingredient.'; return; }
+  if(!steps.length){ err.textContent='Add at least one step.'; return; }
+  const r={id:'c_'+Date.now(),name,category:cat,image:img||'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=600&q=70',prepTime:time,difficulty:diff,calories:cal,protein:pro,carbs:carb,fat:0,ingredients:ings,steps,isCustom:true};
+  const custom=S.get('nf_custom')||[];
+  custom.push(r);
+  S.set('nf_custom',custom);
+  recipes.push(r);
+  updateCategoryCounts();
+  applyFilters();
+  closeModal('addRecipeModal');
+  toast(`🍳 "${name}" added!`);
+  ['ar-name','ar-img','ar-time','ar-cal','ar-pro','ar-carb','ar-ing','ar-steps'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('ar-cat').value='';
+}
+
+/* ====================================================
+   AUTH
+==================================================== */
+function switchTab(tab){
+  document.getElementById('loginForm').style.display=tab==='login'?'block':'none';
+  document.getElementById('regForm').style.display=tab==='register'?'block':'none';
+  document.getElementById('tabLogin').classList.toggle('active',tab==='login');
+  document.getElementById('tabReg').classList.toggle('active',tab==='register');
+}
+function doLogin(){
+  const email=document.getElementById('loginEmail').value.trim();
+  const pass =document.getElementById('loginPass').value;
+  const err  =document.getElementById('loginErr');
+  err.textContent='';
+  if(!email||!pass){err.textContent='Fill in all fields.';return;}
+  if(pass.length<6){err.textContent='Password must be 6+ characters.';return;}
+  const users=S.get('nf_users')||[];
+  const u=users.find(x=>x.email===email);
+  if(!u){err.textContent='No account found. Please register.';return;}
+  if(u.password!==pass){err.textContent='Incorrect password.';return;}
+  currentUser={name:u.name,email:u.email};
+  S.set('nf_user',currentUser);
+  updateUserUI();
+  closeModal('loginModal');
+  toast(`👋 Welcome back, ${u.name}!`);
+}
+function doRegister(){
+  const name =document.getElementById('regName').value.trim();
+  const email=document.getElementById('regEmail').value.trim();
+  const pass =document.getElementById('regPass').value;
+  const err  =document.getElementById('regErr');
+  err.textContent='';
+  if(!name||!email||!pass){err.textContent='Fill in all fields.';return;}
+  if(pass.length<6){err.textContent='Password must be 6+ characters.';return;}
+  const users=S.get('nf_users')||[];
+  if(users.find(u=>u.email===email)){err.textContent='Email already registered.';return;}
+  users.push({name,email,password:pass});
+  S.set('nf_users',users);
+  currentUser={name,email};
+  S.set('nf_user',currentUser);
+  updateUserUI();
+  closeModal('loginModal');
+  toast(`🎉 Welcome to NutriFind, ${name}!`);
+}
+function doLogout(){
+  currentUser=null; S.del('nf_user'); updateUserUI(); closeUF(); toast('👋 Logged out.');
+}
+function updateUserUI(){
+  const label=document.getElementById('userBtnLabel');
+  const avatar=document.getElementById('userAvatar');
+  const ufInfo=document.getElementById('ufInfo');
+  const ufLoginItem=document.getElementById('ufLoginItem');
+  const ufLogout=document.getElementById('ufLogout');
+  const ufName=document.getElementById('ufName');
+  const ufEmail=document.getElementById('ufEmail');
+  if(currentUser){
+    label.textContent=currentUser.name.split(' ')[0];
+    avatar.textContent=currentUser.name[0].toUpperCase();
+    ufInfo.style.display='';
+    ufName.textContent=currentUser.name;
+    ufEmail.textContent=currentUser.email;
+    ufLoginItem.style.display='none';
+    ufLogout.style.display='';
+  } else {
+    label.textContent='Login';
+    avatar.textContent='?';
+    ufInfo.style.display='none';
+    ufLoginItem.style.display='';
+    ufLogout.style.display='none';
+  }
+}
+function toggleUserFlyout(){
+  const uf=document.getElementById('userFlyout');
+  uf.style.display=uf.style.display==='none'?'block':'none';
+}
+function closeUF(){ document.getElementById('userFlyout').style.display='none'; }
+
+/* ====================================================
+   DARK MODE
+==================================================== */
+function toggleDark(){
+  const dark=document.documentElement.getAttribute('data-theme')==='dark';
+  document.documentElement.setAttribute('data-theme',dark?'light':'dark');
+  document.getElementById('darkBtn').textContent=dark?'🌙':'☀️';
+  S.set('nf_dark',!dark);
+}
+
+/* ====================================================
+   SURPRISE ME
+==================================================== */
+function surpriseMe(){
+  const i=Math.floor(Math.random()*recipes.length);
+  showDetail(i);
+  toast('🎲 Here\'s a random recipe!');
+}
+
+/* ====================================================
    MOBILE DRAWER
-===================================================== */
-.drawer-backdrop{
-  position:fixed;inset:0;z-index:600;
-  background:rgba(0,0,0,.5);backdrop-filter:blur(4px);
-  opacity:0;pointer-events:none;transition:opacity .3s;
+==================================================== */
+function toggleDrawer(){
+  const d=document.getElementById('drawer');
+  const b=document.getElementById('drawerBackdrop');
+  const h=document.getElementById('hamBtn');
+  const open=d.classList.toggle('open');
+  b.classList.toggle('open',open);
+  h.classList.toggle('open',open);
+  document.body.style.overflow=open?'hidden':'';
 }
-.drawer-backdrop.open{opacity:1;pointer-events:auto;}
-.drawer{
-  position:fixed;left:0;top:0;bottom:0;z-index:700;
-  width:min(300px, 85vw);background:var(--surface);
-  transform:translateX(-100%);transition:transform .35s cubic-bezier(.4,0,.2,1);
-  display:flex;flex-direction:column;
-  box-shadow:var(--shadow-xl);
-}
-.drawer.open{transform:translateX(0);}
-.drawer-head{
-  padding:20px;background:var(--nav-bg);color:#fff;
-  display:flex;align-items:center;justify-content:space-between;
-}
-.drawer-head h3{font-family:var(--f-display);font-size:1.1rem;font-weight:700;}
-.drawer-close{color:#fff;font-size:1.4rem;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:rgba(255,255,255,.15);}
-.drawer-body{flex:1;overflow-y:auto;padding:12px 0;}
-.dr-link{
-  display:flex;align-items:center;gap:12px;
-  padding:14px 20px;font-size:.9rem;font-weight:500;
-  color:var(--text);transition:background var(--tr);
-}
-.dr-link:hover{background:var(--surface2);}
-.dr-icon{font-size:1.1rem;width:24px;text-align:center;}
 
-/* =====================================================
-   PAGE LAYOUT
-===================================================== */
-.page-offset{padding-top:calc(var(--nav-h) + var(--pill-h));}
+/* ====================================================
+   SIDEBAR GROUP TOGGLE
+==================================================== */
+function toggleGroup(titleEl){
+  const body=titleEl.nextElementSibling;
+  const chev=titleEl.querySelector('.sb-chevron');
+  const open=body.classList.toggle('open');
+  titleEl.classList.toggle('open',open);
+  chev.textContent=open?'▲':'▼';
+}
 
-/* =====================================================
-   HERO BANNER CAROUSEL
-===================================================== */
-.hero-section{position:relative;overflow:hidden;background:#000;}
-.hero-track{
-  display:flex;
-  transition:transform .7s cubic-bezier(.77,0,.18,1);
-}
-.hero-slide{
-  min-width:100%;position:relative;
-  height:min(420px, 55vw);
-  display:flex;align-items:center;overflow:hidden;
-}
-.hero-slide-bg{
-  position:absolute;inset:0;
-  background-size:cover;background-position:center;
-  transform:scale(1.06);
-  transition:transform 8s ease;
-  filter:brightness(.55);
-}
-.hero-slide.active .hero-slide-bg{transform:scale(1);}
-.hero-slide-content{
-  position:relative;z-index:2;
-  padding:0 8% 0 6%;
-  animation:slideContentIn .8s .2s cubic-bezier(.34,1.56,.64,1) both;
-}
-@keyframes slideContentIn{from{opacity:0;transform:translateX(-40px);}to{opacity:1;transform:translateX(0);}}
-.hsc-eyebrow{
-  display:inline-flex;align-items:center;gap:7px;
-  background:rgba(255,255,255,.18);backdrop-filter:blur(8px);
-  border:1px solid rgba(255,255,255,.25);
-  color:#fff;font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
-  padding:5px 14px;border-radius:40px;margin-bottom:14px;
-}
-.hsc-title{
-  font-family:var(--f-display);font-size:clamp(1.8rem,4vw,3rem);
-  font-weight:800;color:#fff;line-height:1.15;margin-bottom:12px;
-  text-shadow:0 2px 20px rgba(0,0,0,.3);
-}
-.hsc-sub{color:rgba(255,255,255,.82);font-size:1rem;max-width:420px;margin-bottom:24px;line-height:1.6;}
-.hero-actions{display:flex;gap:12px;flex-wrap:wrap;}
-.btn-hero-pri{
-  padding:13px 28px;border-radius:var(--r-sm);
-  background:#fff;color:var(--pri-dark);
-  font-weight:700;font-size:.88rem;
-  box-shadow:0 4px 16px rgba(0,0,0,.2);
-  transition:all var(--tr-spring);
-}
-.btn-hero-pri:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 8px 28px rgba(0,0,0,.25);}
-.btn-hero-sec{
-  padding:13px 28px;border-radius:var(--r-sm);
-  background:rgba(255,255,255,.15);color:#fff;
-  font-weight:600;font-size:.88rem;
-  border:1.5px solid rgba(255,255,255,.45);
-  backdrop-filter:blur(8px);
-  transition:all var(--tr);
-}
-.btn-hero-sec:hover{background:rgba(255,255,255,.25);}
-/* Dots */
-.hero-dots{
-  position:absolute;bottom:18px;left:50%;transform:translateX(-50%);
-  display:flex;gap:8px;z-index:3;
-}
-.hero-dot{
-  width:8px;height:8px;border-radius:4px;background:rgba(255,255,255,.45);
-  cursor:pointer;transition:all .4s;
-}
-.hero-dot.active{width:24px;background:#fff;}
-/* Arrows */
-.hero-arrow{
-  position:absolute;top:50%;transform:translateY(-50%);z-index:3;
-  width:42px;height:42px;border-radius:50%;
-  background:rgba(255,255,255,.18);backdrop-filter:blur(8px);
-  border:1px solid rgba(255,255,255,.28);color:#fff;font-size:1.3rem;
-  display:flex;align-items:center;justify-content:center;
-  transition:all var(--tr);
-}
-.hero-arrow:hover{background:rgba(255,255,255,.35);transform:translateY(-50%) scale(1.08);}
-.hero-arrow.left{left:16px;}
-.hero-arrow.right{right:16px;}
-
-/* =====================================================
-   STATS STRIP
-===================================================== */
-.stats-strip{
-  background:var(--surface);
-  border-bottom:1px solid var(--border);
-}
-.stats-inner{
-  max-width:1440px;margin:0 auto;
-  padding:0 20px;
-  display:flex;
-}
-.stat-item{
-  flex:1;display:flex;align-items:center;gap:12px;
-  padding:14px 20px;border-right:1px solid var(--border);
-  transition:background var(--tr);
-}
-.stat-item:last-child{border-right:none;}
-.stat-item:hover{background:var(--surface2);}
-.stat-icon{
-  width:36px;height:36px;border-radius:10px;
-  background:var(--pri-light);color:var(--pri);
-  display:flex;align-items:center;justify-content:center;
-  font-size:1.1rem;flex-shrink:0;
-}
-.stat-text strong{display:block;font-size:.82rem;font-weight:700;color:var(--text);}
-.stat-text small{font-size:.72rem;color:var(--text2);}
-
-/* =====================================================
-   SHOP LAYOUT (Sidebar + Grid)
-===================================================== */
-.shop-wrapper{max-width:1440px;margin:0 auto;padding:20px;}
-.shop-layout{display:flex;gap:20px;align-items:flex-start;}
-
-/* Sidebar */
-.sidebar{
-  width:260px;flex-shrink:0;
-  background:var(--surface);border-radius:var(--r);
-  border:1px solid var(--border);
-  box-shadow:var(--shadow-xs);
-  position:sticky;top:calc(var(--nav-h) + var(--pill-h) + 16px);
-  overflow:hidden;
-}
-.sb-header{
-  padding:14px 16px;display:flex;align-items:center;justify-content:space-between;
-  border-bottom:1px solid var(--border);background:var(--surface);
-}
-.sb-header h3{font-size:.95rem;font-weight:800;font-family:var(--f-display);letter-spacing:.02em;}
-.sb-clear{font-size:.75rem;color:var(--pri);font-weight:700;cursor:pointer;transition:color var(--tr);}
-.sb-clear:hover{color:var(--pri-dark);}
-.sb-group{border-bottom:1px solid var(--border);}
-.sb-group-title{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:12px 16px;cursor:pointer;
-  font-size:.82rem;font-weight:700;color:var(--text2);letter-spacing:.06em;text-transform:uppercase;
-  transition:background var(--tr);user-select:none;
-}
-.sb-group-title:hover{background:var(--surface2);}
-.sb-chevron{font-size:.65rem;transition:transform .25s;display:inline-block;}
-.sb-group-title.open .sb-chevron{transform:rotate(180deg);}
-.sb-body{padding:8px 16px 14px;display:none;}
-.sb-body.open{display:block;}
-.sb-check{
-  display:flex;align-items:center;gap:9px;
-  padding:6px 4px;cursor:pointer;font-size:.86rem;color:var(--text);
-  border-radius:var(--r-sm);transition:background var(--tr);
-}
-.sb-check:hover{background:var(--surface2);}
-.sb-check input[type="checkbox"]{
-  width:16px;height:16px;border-radius:4px;flex-shrink:0;
-  accent-color:var(--pri);cursor:pointer;
-  background:var(--surface2);border:1.5px solid var(--border);
-  box-shadow:none;padding:0;
-}
-.sb-check input:focus{box-shadow:none;}
-.sb-count{margin-left:auto;font-size:.72rem;color:var(--text3);background:var(--surface2);padding:1px 7px;border-radius:40px;}
-.sb-input{padding:8px 4px;}
-.sb-input input{font-size:.84rem;padding:9px 12px;}
-
-/* Star filter */
-.sb-stars{display:flex;flex-direction:column;gap:6px;padding:4px 0;}
-.sb-star-row{display:flex;align-items:center;gap:6px;cursor:pointer;padding:4px 0;}
-.sb-star-row input{width:16px;height:16px;flex-shrink:0;accent-color:var(--gold);}
-.star-display{color:var(--gold);font-size:.85rem;letter-spacing:-.5px;}
-
-/* Range slider */
-.range-wrap{padding:4px 0 8px;}
-.range-wrap input[type="range"]{
-  border:none;box-shadow:none;padding:0;height:4px;
-  background:var(--border);accent-color:var(--pri);
-  border-radius:2px;
-}
-.range-labels{display:flex;justify-content:space-between;font-size:.72rem;color:var(--text2);margin-top:4px;}
-
-/* Grid area */
-.grid-area{flex:1;min-width:0;}
-.grid-topbar{
-  display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:16px;padding:12px 16px;
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--r);box-shadow:var(--shadow-xs);
-  flex-wrap:wrap;gap:10px;
-}
-.gtb-left{display:flex;align-items:center;gap:10px;}
-.gtb-title{font-family:var(--f-display);font-size:.95rem;font-weight:700;}
-.gtb-count{
-  font-size:.78rem;color:var(--text2);
-  background:var(--surface2);padding:3px 10px;border-radius:40px;
-}
-.gtb-right{display:flex;align-items:center;gap:10px;}
-.gtb-sort{
-  padding:7px 12px;font-size:.82rem;width:auto;
-  background:var(--surface);color:var(--text);
-  border:1.5px solid var(--border);border-radius:var(--r-sm);
-  cursor:pointer;
-}
-.gtb-sort:focus{box-shadow:none;}
-.gtb-view-btns{display:flex;gap:4px;}
-.view-btn{
-  width:32px;height:32px;border-radius:var(--r-sm);
-  display:flex;align-items:center;justify-content:center;
-  font-size:.9rem;color:var(--text2);border:1.5px solid var(--border);
-  background:var(--surface);transition:all var(--tr);
-}
-.view-btn.active,
-.view-btn:hover{background:var(--pri);color:#fff;border-color:var(--pri);}
-
-/* Active filter tags */
-.active-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
-.atag{
-  display:flex;align-items:center;gap:6px;
-  padding:5px 12px;border-radius:40px;
-  font-size:.75rem;font-weight:600;
-  background:var(--pri-light);color:var(--pri);
-  border:1px solid rgba(15,157,118,.25);
-  animation:tagIn .2s var(--tr-spring);
-}
-@keyframes tagIn{from{opacity:0;scale:.85;}to{opacity:1;scale:1;}}
-.atag-x{cursor:pointer;font-size:.9rem;opacity:.7;transition:opacity var(--tr);line-height:1;}
-.atag-x:hover{opacity:1;}
-
-/* =====================================================
-   RECIPE CARDS
-===================================================== */
-.recipe-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
-  gap:16px;
-}
-.recipe-grid.list-view{grid-template-columns:1fr;}
-
-/* Card */
-.recipe-card{
-  background:var(--surface);border-radius:var(--r);
-  border:1px solid var(--border);overflow:hidden;
-  display:flex;flex-direction:column;
-  transition:transform var(--tr),box-shadow var(--tr),border-color var(--tr);
-  animation:cardIn .4s ease both;
-  position:relative;
-}
-@keyframes cardIn{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
-.recipe-card:hover{
-  transform:translateY(-5px);
-  box-shadow:var(--shadow-md);
-  border-color:rgba(15,157,118,.3);
-}
-/* List view card */
-.recipe-grid.list-view .recipe-card{flex-direction:row;}
-.recipe-grid.list-view .rc-img{width:200px;height:auto;flex-shrink:0;}
-.recipe-grid.list-view .rc-img img{height:100%;}
-
-/* Image */
-.rc-img{
-  position:relative;height:190px;overflow:hidden;cursor:pointer;
-}
-.rc-img img{
-  width:100%;height:100%;object-fit:cover;
-  transition:transform .5s ease;
-}
-.recipe-card:hover .rc-img img{transform:scale(1.07);}
-
-/* Category tag */
-.rc-tag{
-  position:absolute;top:10px;left:10px;
-  font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
-  padding:4px 10px;border-radius:40px;color:#fff;
-  backdrop-filter:blur(4px);
-}
-.tag-Vegetarian {background:rgba(46,125,50,.9);}
-.tag-Vegan      {background:rgba(27,94,32,.9);}
-.tag-Keto       {background:rgba(121,85,72,.9);}
-.tag-High-Protein{background:rgba(183,28,28,.9);}
-.tag-Custom     {background:rgba(74,20,140,.9);}
-
-/* Fav button */
-.rc-fav{
-  position:absolute;top:10px;right:10px;
-  width:32px;height:32px;border-radius:50%;
-  background:rgba(255,255,255,.9);backdrop-filter:blur(4px);
-  display:flex;align-items:center;justify-content:center;
-  font-size:.95rem;box-shadow:0 2px 8px rgba(0,0,0,.15);
-  transition:transform var(--tr-spring),background var(--tr);
-  z-index:2;
-}
-.rc-fav:hover{transform:scale(1.22);}
-.rc-fav.saved{background:#fff0f0;}
-
-/* Hover share overlay */
-.rc-share-overlay{
-  position:absolute;inset:0;
-  background:linear-gradient(to bottom,transparent 30%,rgba(0,0,0,.65));
-  display:flex;align-items:flex-end;justify-content:center;
-  padding-bottom:14px;gap:8px;
-  opacity:0;transition:opacity var(--tr);
-}
-.rc-img:hover .rc-share-overlay{opacity:1;}
-.rc-share-btn{
-  background:rgba(255,255,255,.9);color:#333;
-  font-size:.7rem;font-weight:700;
-  padding:5px 11px;border-radius:40px;
-  display:flex;align-items:center;gap:4px;
-  transition:background var(--tr),transform var(--tr);
-}
-.rc-share-btn:hover{background:#fff;transform:scale(1.06);}
-
-/* Card body */
-.rc-body{padding:14px 14px 12px;flex:1;display:flex;flex-direction:column;gap:8px;}
-.rc-name{
-  font-family:var(--f-display);font-size:.98rem;font-weight:700;
-  line-height:1.3;cursor:pointer;
-  transition:color var(--tr);
-}
-.rc-name:hover{color:var(--pri);}
-
-/* Nutrition chips */
-.rc-nutrition{display:flex;gap:6px;flex-wrap:wrap;}
-.nutr-chip{
-  font-size:.68rem;font-weight:600;padding:3px 8px;
-  border-radius:40px;white-space:nowrap;
-}
-.nc-cal{background:rgba(255,107,53,.1);color:var(--acc);}
-.nc-pro{background:rgba(15,157,118,.1);color:var(--pri);}
-.nc-carb{background:rgba(245,158,11,.1);color:var(--gold);}
-
-/* Meta row */
-.rc-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-.rc-meta-chip{
-  font-size:.72rem;color:var(--text2);
-  display:flex;align-items:center;gap:3px;
-}
-.diff-pill{
-  font-size:.67rem;font-weight:700;padding:2px 8px;border-radius:40px;
-}
-.dp-Easy  {background:#e8f5e9;color:#2e7d32;}
-.dp-Medium{background:#fff8e1;color:#e65100;}
-.dp-Hard  {background:#fce4ec;color:#c62828;}
-[data-theme="dark"] .dp-Easy  {background:rgba(46,125,50,.2);color:#81c784;}
-[data-theme="dark"] .dp-Medium{background:rgba(230,81,0,.2); color:#ffb74d;}
-[data-theme="dark"] .dp-Hard  {background:rgba(198,40,40,.2);color:#ef9a9a;}
-
-/* Stars */
-.rc-stars{display:flex;align-items:center;gap:5px;}
-.stars-row{display:flex;gap:1px;}
-.star{
-  font-size:.85rem;cursor:pointer;
-  transition:transform var(--tr-spring),filter var(--tr);
-  line-height:1;
-}
-.star:hover{transform:scale(1.3);}
-.star.on {color:var(--gold);filter:drop-shadow(0 0 3px rgba(245,158,11,.5));}
-.star.off{color:var(--border);}
-.rc-rating-txt{font-size:.72rem;color:var(--text2);}
-
-/* Action btn */
-.rc-actions{display:flex;gap:8px;margin-top:4px;}
-.btn-view{
-  flex:1;padding:9px 14px;border-radius:var(--r-sm);
-  background:var(--pri);color:#fff;
-  font-size:.8rem;font-weight:700;letter-spacing:.02em;
-  text-align:center;
-  transition:all var(--tr);
-  box-shadow:0 2px 8px rgba(15,157,118,.25);
-}
-.btn-view:hover{background:var(--pri-dark);transform:translateY(-2px);box-shadow:0 4px 16px rgba(15,157,118,.35);}
-.btn-plan{
-  padding:9px 12px;border-radius:var(--r-sm);
-  border:1.5px solid var(--border);color:var(--text2);
-  font-size:.8rem;font-weight:600;
-  transition:all var(--tr);
-}
-.btn-plan:hover{border-color:var(--pri);color:var(--pri);background:var(--pri-light);}
-
-/* =====================================================
-   SKELETON LOADER
-===================================================== */
-.sk-card{
-  background:var(--surface);border-radius:var(--r);
-  border:1px solid var(--border);overflow:hidden;
-  animation:cardIn .4s ease both;
-}
-.sk-img{height:190px;background:var(--surface2);position:relative;overflow:hidden;}
-.sk-img::after,.sk-line::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);
-  animation:shimmer 1.6s infinite;
-}
-[data-theme="dark"] .sk-img::after,[data-theme="dark"] .sk-line::after{
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.06),transparent);
-}
-@keyframes shimmer{from{transform:translateX(-100%);}to{transform:translateX(100%);}}
-.sk-body{padding:14px;}
-.sk-line{
-  height:12px;border-radius:6px;background:var(--surface2);
-  margin-bottom:10px;position:relative;overflow:hidden;
-}
-.sk-line.w80{width:80%;}
-.sk-line.w60{width:60%;}
-.sk-line.w40{width:40%;}
-
-/* =====================================================
-   EMPTY STATE
-===================================================== */
-.empty-state{
-  text-align:center;padding:60px 24px;
-  display:flex;flex-direction:column;align-items:center;gap:14px;
-}
-.empty-state .es-icon{font-size:4rem;}
-.empty-state h3{font-family:var(--f-display);font-size:1.3rem;font-weight:700;}
-.empty-state p{color:var(--text2);max-width:320px;}
-
-/* =====================================================
-   INNER PAGES
-===================================================== */
-.inner-page{max-width:1440px;margin:0 auto;padding:24px 20px 60px;}
-.breadcrumb{
-  display:flex;align-items:center;gap:6px;
-  font-size:.8rem;color:var(--text2);margin-bottom:18px;flex-wrap:wrap;
-}
-.breadcrumb a{color:var(--pri);font-weight:600;}
-.breadcrumb a:hover{text-decoration:underline;}
-.bc-sep{color:var(--text3);}
-.ip-header{display:flex;align-items:center;gap:12px;margin-bottom:24px;}
-.ip-header h2{font-family:var(--f-display);font-size:1.5rem;font-weight:800;}
-.ip-count{background:var(--surface2);color:var(--text2);padding:3px 12px;border-radius:40px;font-size:.8rem;}
-
-/* =====================================================
-   RECIPE DETAIL
-===================================================== */
-.detail-hero{
-  position:relative;border-radius:var(--r-lg);overflow:hidden;
-  height:min(400px,50vw);margin-bottom:28px;cursor:pointer;
-}
-.detail-hero img{width:100%;height:100%;object-fit:cover;}
-.detail-hero-overlay{
-  position:absolute;inset:0;
-  background:linear-gradient(to top,rgba(0,0,0,.75) 0%,rgba(0,0,0,.1) 60%);
-  display:flex;align-items:flex-end;padding:28px 32px;
-}
-.dho-content{flex:1;}
-.dho-tag{
-  display:inline-flex;align-items:center;gap:6px;
-  background:var(--pri);color:#fff;
-  font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
-  padding:5px 14px;border-radius:40px;margin-bottom:12px;
-}
-.dho-title{
-  font-family:var(--f-display);font-size:clamp(1.5rem,3.5vw,2.4rem);
-  font-weight:800;color:#fff;line-height:1.2;
-  text-shadow:0 2px 12px rgba(0,0,0,.3);
-}
-.dho-actions{display:flex;gap:8px;margin-left:16px;align-items:flex-end;flex-shrink:0;}
-.dho-btn{
-  padding:10px 18px;border-radius:var(--r-sm);
-  font-size:.8rem;font-weight:700;
-  background:rgba(255,255,255,.15);color:#fff;
-  border:1.5px solid rgba(255,255,255,.35);
-  backdrop-filter:blur(8px);
-  transition:all var(--tr);display:flex;align-items:center;gap:6px;
-}
-.dho-btn:hover{background:rgba(255,255,255,.28);}
-.dho-btn.pri{background:var(--pri);border-color:var(--pri);}
-
-/* Nutrition banner */
-.nutr-banner{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));
-  gap:12px;margin-bottom:28px;
-}
-.nutr-card{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--r);padding:16px;text-align:center;
-  transition:all var(--tr);box-shadow:var(--shadow-xs);
-}
-.nutr-card:hover{box-shadow:var(--shadow-sm);transform:translateY(-2px);border-color:var(--pri);}
-.nutr-val{
-  font-family:var(--f-display);font-size:1.5rem;font-weight:800;
-  color:var(--pri);line-height:1;margin-bottom:4px;
-}
-.nutr-lbl{font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text2);}
-
-/* Detail rating */
-.detail-rating-row{
-  display:flex;align-items:center;gap:14px;
-  padding:16px;background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--r);margin-bottom:20px;flex-wrap:wrap;gap:12px;
-}
-.dr-label{font-weight:700;font-size:.9rem;}
-.dr-stars{display:flex;gap:4px;}
-.dr-star{
-  font-size:1.4rem;cursor:pointer;
-  transition:transform var(--tr-spring),filter var(--tr);
-}
-.dr-star:hover{transform:scale(1.3);}
-.dr-star.on {color:var(--gold);filter:drop-shadow(0 0 4px rgba(245,158,11,.5));}
-.dr-star.off{color:var(--border);}
-.dr-count{font-size:.82rem;color:var(--text2);}
-
-/* Detail action bar */
-.detail-action-bar{
-  display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;
-}
-.dab-btn{
-  display:flex;align-items:center;gap:7px;
-  padding:10px 18px;border-radius:var(--r-sm);
-  font-size:.82rem;font-weight:700;
-  border:1.5px solid var(--border);color:var(--text2);
-  background:var(--surface);
-  transition:all var(--tr);
-}
-.dab-btn:hover{border-color:var(--pri);color:var(--pri);background:var(--pri-light);}
-.dab-btn.pri-btn{background:var(--pri);color:#fff;border-color:var(--pri);}
-.dab-btn.pri-btn:hover{background:var(--pri-dark);}
-
-/* Social share row */
-.social-row{
-  display:flex;gap:8px;flex-wrap:wrap;padding:16px;
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--r);margin-bottom:24px;
-}
-.soc-btn{
-  display:flex;align-items:center;gap:6px;
-  padding:9px 16px;border-radius:var(--r-sm);
-  font-size:.78rem;font-weight:700;color:#fff;
-  transition:all var(--tr);
-}
-.soc-btn:hover{transform:translateY(-2px);filter:brightness(1.1);}
-.soc-tw{background:#1da1f2;} .soc-fb{background:#1877f2;}
-.soc-wa{background:#25d366;} .soc-ig{background:linear-gradient(135deg,#f09433,#dc2743,#bc1888);}
-.soc-cp{background:var(--text2);}
-
-/* Detail body */
-.detail-body{display:grid;grid-template-columns:1fr 1.5fr;gap:28px;align-items:start;}
-.detail-section h3{
-  font-family:var(--f-display);font-size:1.05rem;font-weight:800;
-  padding-bottom:10px;margin-bottom:14px;
-  border-bottom:2px solid var(--border);
-  display:flex;align-items:center;gap:8px;
-}
-.ingredient-list{list-style:none;display:flex;flex-direction:column;gap:8px;}
-.ingredient-list li{
-  display:flex;align-items:center;gap:10px;
-  padding:10px 14px;
-  background:var(--surface2);border-radius:var(--r-sm);
-  border-left:3px solid var(--pri);
-  font-size:.88rem;
-  transition:all var(--tr);
-}
-.ingredient-list li:hover{background:var(--pri-light);transform:translateX(3px);}
-.ing-dot{color:var(--pri);font-size:1rem;flex-shrink:0;}
-.steps-list{list-style:none;display:flex;flex-direction:column;gap:12px;}
-.step-item{
-  display:flex;gap:14px;
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--r);padding:14px 16px;
-  transition:all var(--tr);
-}
-.step-item:hover{border-color:var(--pri);box-shadow:var(--shadow-sm);transform:translateX(3px);}
-.step-num{
-  width:30px;height:30px;border-radius:50%;
-  background:var(--pri);color:#fff;
-  display:flex;align-items:center;justify-content:center;
-  font-size:.75rem;font-weight:800;flex-shrink:0;
-  box-shadow:0 2px 8px rgba(15,157,118,.35);
-}
-.step-txt{font-size:.88rem;line-height:1.65;padding-top:4px;color:var(--text);}
-
-/* Related recipes */
-.related-section{margin-top:36px;}
-.related-section h3{font-family:var(--f-display);font-size:1.1rem;font-weight:800;margin-bottom:16px;}
-.related-scroll{
-  display:flex;gap:14px;overflow-x:auto;padding-bottom:8px;
-  scrollbar-width:none;
-}
-.related-scroll::-webkit-scrollbar{display:none;}
-.related-card{
-  min-width:180px;background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--r);overflow:hidden;cursor:pointer;flex-shrink:0;
-  transition:all var(--tr);
-}
-.related-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);border-color:var(--pri);}
-.related-img{height:120px;overflow:hidden;}
-.related-img img{width:100%;height:100%;object-fit:cover;transition:transform .4s;}
-.related-card:hover .related-img img{transform:scale(1.08);}
-.related-info{padding:10px 12px;}
-.related-name{font-size:.82rem;font-weight:700;font-family:var(--f-display);}
-.related-cat{font-size:.7rem;color:var(--text2);}
-
-/* =====================================================
+/* ====================================================
    MODALS
-===================================================== */
-.modal-overlay{
-  position:fixed;inset:0;z-index:800;
-  background:rgba(0,0,0,.55);backdrop-filter:blur(6px);
-  display:none;align-items:center;justify-content:center;padding:20px;
-  transition:opacity .25s;
+==================================================== */
+function openModal(id){
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow='hidden';
+  if(id==='mealPlanModal') renderMealPlan();
 }
-.modal-overlay.open{display:flex;animation:ovIn .22s ease;}
-@keyframes ovIn{from{opacity:0;}to{opacity:1;}}
-.modal-box{
-  background:var(--surface);border-radius:var(--r-xl);
-  padding:0;width:100%;max-width:460px;
-  position:relative;max-height:92vh;overflow:hidden;
-  display:flex;flex-direction:column;
-  box-shadow:var(--shadow-xl);
-  animation:mbIn .35s cubic-bezier(.34,1.56,.64,1);
+function closeModal(id){
+  document.getElementById(id).classList.remove('open');
+  document.body.style.overflow='';
 }
-@keyframes mbIn{from{opacity:0;transform:scale(.88) translateY(24px);}to{opacity:1;transform:scale(1) translateY(0);}}
-.modal-box.wide{max-width:720px;}
-.modal-box.ultra{max-width:1000px;}
-.modal-close{
-  position:absolute;top:14px;right:14px;z-index:10;
-  width:32px;height:32px;border-radius:50%;font-size:1rem;
-  display:flex;align-items:center;justify-content:center;
-  background:rgba(0,0,0,.12);color:inherit;
-  transition:all var(--tr);
-}
-.modal-close:hover{background:rgba(220,38,38,.15);color:#dc2626;transform:rotate(90deg);}
-.modal-scroll{overflow-y:auto;flex:1;padding:32px;}
+document.querySelectorAll('.modal-overlay').forEach(o=>{
+  o.addEventListener('click',e=>{ if(e.target===o){ o.classList.remove('open'); document.body.style.overflow=''; }});
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape') document.querySelectorAll('.modal-overlay.open').forEach(o=>{ o.classList.remove('open'); document.body.style.overflow=''; });
+});
 
-/* Login modal split */
-.login-split{display:flex;min-height:400px;}
-.login-left{
-  width:220px;flex-shrink:0;
-  background:linear-gradient(145deg,var(--pri) 0%,var(--pri-dark) 100%);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:28px;text-align:center;color:#fff;
+/* ====================================================
+   VIEW SWITCHING
+==================================================== */
+function switchView(name){
+  ['homeView','favView','detailView'].forEach(v=>{
+    const el=document.getElementById(v);
+    el.style.display='none';
+    el.classList.remove('page-view');
+  });
+  const map={home:'homeView',favorites:'favView',detail:'detailView'};
+  const el=document.getElementById(map[name]);
+  el.style.display='';
+  void el.offsetWidth;
+  el.classList.add('page-view');
 }
-.ll-icon{font-size:3.5rem;margin-bottom:14px;animation:float 3s ease infinite;}
-@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
-.ll-title{font-family:var(--f-display);font-size:1.2rem;font-weight:800;margin-bottom:8px;}
-.ll-sub{font-size:.8rem;opacity:.82;line-height:1.5;}
-.login-right{flex:1;padding:28px;overflow-y:auto;}
-.modal-tabs{display:flex;background:var(--surface2);border-radius:var(--r-sm);padding:4px;margin-bottom:22px;gap:4px;}
-.mtab{
-  flex:1;padding:9px;border-radius:var(--r-sm);
-  font-size:.85rem;font-weight:700;color:var(--text2);
-  transition:all var(--tr);
+function getCurrentView(){
+  if(document.getElementById('favView').style.display!=='none') return 'favorites';
+  if(document.getElementById('detailView').style.display!=='none') return 'detail';
+  return 'home';
 }
-.mtab.active{background:var(--surface);color:var(--pri);box-shadow:var(--shadow-xs);}
-.modal-title{font-family:var(--f-display);font-size:1.4rem;font-weight:800;margin-bottom:6px;}
-.modal-sub{font-size:.85rem;color:var(--text2);margin-bottom:20px;}
-.form-group{margin-bottom:14px;}
-.form-group label{display:block;font-size:.78rem;font-weight:700;color:var(--text2);margin-bottom:6px;letter-spacing:.04em;text-transform:uppercase;}
-.form-error{font-size:.8rem;color:#e53e3e;min-height:18px;margin-bottom:8px;}
-.btn-submit{
-  width:100%;padding:13px;border-radius:var(--r-sm);
-  background:var(--pri);color:#fff;font-weight:800;font-size:.9rem;
-  box-shadow:0 4px 16px rgba(15,157,118,.35);
-  transition:all var(--tr-spring);
+function goHome(){
+  switchView('home');
+  applyFilters();
+  window.scrollTo({top:0,behavior:'smooth'});
+  setBN('bnHome');
 }
-.btn-submit:hover{background:var(--pri-dark);transform:translateY(-2px);box-shadow:0 8px 24px rgba(15,157,118,.45);}
-.modal-legal{font-size:.72rem;color:var(--text2);text-align:center;margin-top:12px;line-height:1.5;}
-.modal-legal a{color:var(--pri);}
+function setBN(id){
+  document.querySelectorAll('.bn-btn').forEach(b=>b.classList.remove('active'));
+  const el=document.getElementById(id);
+  if(el) el.classList.add('active');
+}
 
-/* Add recipe modal */
-.modal-header{padding:24px 28px 0;border-bottom:1px solid var(--border);padding-bottom:18px;margin-bottom:0;}
-.modal-header h2{font-family:var(--f-display);font-size:1.3rem;font-weight:800;}
-.modal-header p{font-size:.84rem;color:var(--text2);margin-top:4px;}
-.ar-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 20px;}
-.ar-grid .form-group{margin-bottom:14px;}
-.ar-grid .span2{grid-column:span 2;}
-.modal-footer{padding:16px 28px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;}
-.btn-cancel{padding:11px 22px;border-radius:var(--r-sm);border:1.5px solid var(--border);color:var(--text2);font-weight:600;font-size:.85rem;transition:all var(--tr);}
-.btn-cancel:hover{border-color:var(--pri);color:var(--pri);}
-.btn-save{padding:11px 26px;border-radius:var(--r-sm);background:var(--acc);color:#fff;font-weight:800;font-size:.85rem;transition:all var(--tr);}
-.btn-save:hover{background:var(--acc-dark);transform:translateY(-1px);}
-
-/* Meal planner */
-.mp-grid{
-  display:grid;
-  grid-template-columns:90px repeat(3,1fr);
-  gap:8px;overflow-x:auto;
-}
-.mp-head{font-size:.72rem;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;padding:8px 4px;text-align:center;}
-.mp-day{font-size:.8rem;font-weight:700;color:var(--text);display:flex;align-items:center;}
-.mp-slot{
-  min-height:72px;border-radius:var(--r-sm);
-  border:1.5px dashed var(--border);
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;padding:8px;text-align:center;
-  transition:all var(--tr);
-}
-.mp-slot:hover{border-color:var(--pri);background:var(--pri-light);}
-.mp-slot.filled{border-style:solid;border-color:var(--pri);background:rgba(15,157,118,.07);}
-.mp-slot-name{font-size:.75rem;font-weight:700;color:var(--text);line-height:1.3;}
-.mp-slot-clear{font-size:.65rem;color:var(--text2);text-decoration:underline;display:block;margin-top:3px;}
-.mp-empty{font-size:.72rem;color:var(--text3);}
-
-/* Slot picker */
-.slot-search{margin-bottom:12px;}
-.slot-list{max-height:360px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;}
-.slot-item{
-  display:flex;align-items:center;gap:12px;padding:10px 12px;
-  border-radius:var(--r-sm);border:1px solid var(--border);cursor:pointer;
-  transition:all var(--tr);
-}
-.slot-item:hover{border-color:var(--pri);background:var(--pri-light);}
-.slot-img{width:48px;height:48px;border-radius:var(--r-sm);object-fit:cover;flex-shrink:0;}
-.slot-name{font-size:.87rem;font-weight:700;}
-.slot-cat{font-size:.72rem;color:var(--text2);}
-
-/* =====================================================
+/* ====================================================
    TOAST
-===================================================== */
-.toast{
-  position:fixed;bottom:28px;left:50%;
-  transform:translateX(-50%) translateY(80px);
-  background:var(--text);color:var(--bg);
-  padding:12px 22px;border-radius:40px;
-  font-size:.85rem;font-weight:600;
-  box-shadow:var(--shadow-lg);z-index:9000;
-  white-space:nowrap;opacity:0;
-  transition:opacity .3s,transform .38s var(--tr-spring);
-  pointer-events:none;
-  display:flex;align-items:center;gap:8px;
-}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-.toast-icon{font-size:1rem;}
-
-/* =====================================================
-   BOTTOM NAV (mobile)
-===================================================== */
-.bottom-nav{
-  display:none;
-  position:fixed;bottom:0;left:0;right:0;z-index:490;
-  height:58px;background:var(--surface);
-  border-top:1px solid var(--border);
-  box-shadow:0 -4px 20px rgba(0,0,0,.08);
-}
-.bn-inner{display:flex;height:100%;}
-.bn-btn{
-  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:3px;font-size:.6rem;font-weight:700;color:var(--text2);
-  transition:color var(--tr);letter-spacing:.03em;
-  text-transform:uppercase;
-}
-.bn-btn .bn-icon{font-size:1.25rem;transition:transform var(--tr-spring);}
-.bn-btn.active{color:var(--pri);}
-.bn-btn.active .bn-icon{transform:scale(1.2);}
-.bn-btn:hover{color:var(--pri);}
-
-/* =====================================================
-   PAGE VIEWS
-===================================================== */
-.page-view{animation:pvIn .4s cubic-bezier(.22,1,.36,1) both;}
-@keyframes pvIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
-
-/* =====================================================
-   BACK BUTTON
-===================================================== */
-.back-btn{
-  display:inline-flex;align-items:center;gap:8px;
-  padding:10px 18px;border-radius:var(--r-sm);
-  border:1.5px solid var(--border);color:var(--text2);
-  font-size:.85rem;font-weight:700;
-  margin-bottom:20px;
-  transition:all var(--tr);background:var(--surface);
-  box-shadow:var(--shadow-xs);
-}
-.back-btn:hover{border-color:var(--pri);color:var(--pri);background:var(--pri-light);}
-
-/* =====================================================
-   RESPONSIVE
-===================================================== */
-@media(max-width:1100px){
-  .sidebar{width:220px;}
-  .recipe-grid{grid-template-columns:repeat(auto-fill,minmax(190px,1fr));}
-}
-@media(max-width:900px){
-  .sidebar{display:none;}
-  .recipe-grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));}
-  .detail-body{grid-template-columns:1fr;}
-  .ar-grid{grid-template-columns:1fr;}
-  .ar-grid .span2{grid-column:span 1;}
-  .login-left{display:none;}
-  .nutr-banner{grid-template-columns:repeat(3,1fr);}
-  .stats-inner{overflow-x:auto;}
-  .stat-item{min-width:160px;}
-}
-@media(max-width:700px){
-  :root{--nav-h:56px;--pill-h:44px;}
-  .nav-logo-sub,.nav-right .nav-btn{display:none;}
-  .nav-search-wrap{max-width:none;}
-  .ham-btn{display:flex;}
-  .bottom-nav{display:block;}
-  body{padding-bottom:58px;}
-  .hero-slide{height:min(260px,70vw);}
-  .hsc-title{font-size:1.3rem;}
-  .hsc-sub{display:none;}
-  .stats-strip{display:none;}
-  .shop-layout{flex-direction:column;}
-  .recipe-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;}
-  .rc-img{height:150px;}
-  .detail-hero{height:220px;}
-  .detail-hero-overlay{padding:18px 20px;}
-  .dho-title{font-size:1.3rem;}
-  .dho-actions{display:none;}
-  .mp-grid{grid-template-columns:70px repeat(3,1fr);}
-  .modal-box.ultra{max-width:100%;}
-  .back-btn{padding:8px 14px;font-size:.8rem;}
-  .shop-wrapper{padding:12px;}
-}
-@media(max-width:440px){
-  .recipe-grid{grid-template-columns:1fr 1fr;}
-  .nutr-banner{grid-template-columns:1fr 1fr;}
-}
-
-/* =====================================================
-   PRINT
-===================================================== */
-@media print{
-  .navbar,.pill-bar,.sidebar,.bottom-nav,.toast,
-  .detail-action-bar,.social-row,.modal-overlay,
-  .back-btn,.related-section{display:none!important;}
-  body{background:#fff!important;color:#000!important;}
-  .detail-hero{height:220px;}
-  .detail-body{grid-template-columns:1fr 1fr;}
+==================================================== */
+let toastTimer;
+function toast(msg, type='success'){
+  const el=document.getElementById('toast');
+  const icon={success:'✅',warn:'⚠️',info:'ℹ️'}[type]||'✅';
+  document.getElementById('toastIcon').textContent=icon;
+  document.getElementById('toastMsg').textContent=msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove('show'), 2800);
 }
